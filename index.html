@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティング計算ポータル (最終完成版)</title>
+    <title>ひろ兄ぃ専用 マーケティング計算ポータル (最終版)</title>
     <style>
         :root {
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
+            --bg-color: #f0f2f5;   /* 外側の背景（薄いグレー） */
+            --card-bg: #ffffef;    /* ★変更★ 計算機本体の背景（クリーム色） */
             --primary: #4f46e5;
             --danger: #ef4444;
             --success: #10b981;
@@ -27,7 +27,7 @@
         .container {
             width: 100%;
             max-width: 900px;
-            background: var(--card-bg);
+            background: var(--card-bg); /* ここが #ffffef になりました！ */
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
@@ -55,30 +55,32 @@
         }
         
         .input-group input {
-            width: 100%; padding: 14px; border: 2px solid var(--border); border-radius: 10px;
+            width: 100%; padding: 14px; border: 2px solid #d1d5db; /* 枠線を少し濃くして見やすく */
+            border-radius: 10px;
             font-size: 20px; 
             font-weight: bold;
+            background-color: #ffffff; /* 入力欄の中は白くして文字を見やすく */
             box-sizing: border-box; transition: 0.2s; outline: none;
         }
-        .input-group input:focus { border-color: var(--primary); background-color: #f9faff; }
+        .input-group input:focus { border-color: var(--primary); background-color: #ffffff; }
 
         /* 結果セクション */
         .result-section {
-            background: #f8fafc;
-            border: 1px solid var(--border);
+            background: #ffffff; /* ★変更★ 結果エリアは見やすいように白背景に！ */
+            border: 2px solid var(--border); /* 枠線をしっかり */
             border-radius: 12px;
             padding: 25px;
             margin-bottom: 25px;
         }
         
-        /* ★修正★ タイトルも20px＆極太に！ */
+        /* ★修正★ タイトルを900（Black）で超極太に！ */
         .result-title {
-            font-weight: 800;       /* ← 太さ800（極太）に変更 */
-            font-size: 20px;        /* ← 18pxから20pxにアップ */
+            font-weight: 900;       /* ← 800から900にアップ！一番太い設定 */
+            font-size: 22px;        /* ← サイズも少しアップ */
             margin-bottom: 15px;
             border-bottom: 2px solid var(--border); 
             padding-bottom: 10px; 
-            color: var(--text);
+            color: #000000;         /* ← 色も完全な黒にして強調 */
             letter-spacing: 0.5px;
         }
 
@@ -141,7 +143,7 @@
 
 <div class="container">
     <h1>📊 ひろ兄ぃ専用 マーケティング計算機</h1>
-    <p class="subtitle">最終完成版：全項目サイズ統一＆視認性MAXモード</p>
+    <p class="subtitle">最終完成版：背景クリーム色＆タイトル超極太モード</p>
 
     <div class="input-grid">
         <div class="input-group full-width">
