@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティング計算ポータル (超特大版)</title>
+    <title>ひろ兄ぃ専用 マーケティング計算ポータル (最終完成版)</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -39,25 +39,24 @@
         .input-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 25px; /* 間隔も少し広げたよ */
+            gap: 25px;
             margin-bottom: 35px;
         }
         .full-width { grid-column: 1 / -1; }
         
-        /* ★修正★ 項目名のフォントサイズをさらに大きく！(20px) */
+        /* 項目名のフォント設定 */
         .input-group label { 
             display: block; 
-            font-weight: 800; /* 極太に！ */
+            font-weight: 800; /* 極太 */
             margin-bottom: 10px; 
-            font-size: 20px; /* ← 結果の数値と同じ大きさに！ */
+            font-size: 20px; 
             color: var(--text);
             letter-spacing: 0.5px;
         }
         
-        /* 入力欄の文字も大きく */
         .input-group input {
             width: 100%; padding: 14px; border: 2px solid var(--border); border-radius: 10px;
-            font-size: 20px; /* 入力文字も20pxに！ */
+            font-size: 20px; 
             font-weight: bold;
             box-sizing: border-box; transition: 0.2s; outline: none;
         }
@@ -71,9 +70,16 @@
             padding: 25px;
             margin-bottom: 25px;
         }
+        
+        /* ★修正★ タイトルも20px＆極太に！ */
         .result-title {
-            font-weight: bold; font-size: 18px; margin-bottom: 15px;
-            border-bottom: 2px solid var(--border); padding-bottom: 10px; color: var(--text);
+            font-weight: 800;       /* ← 太さ800（極太）に変更 */
+            font-size: 20px;        /* ← 18pxから20pxにアップ */
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--border); 
+            padding-bottom: 10px; 
+            color: var(--text);
+            letter-spacing: 0.5px;
         }
 
         /* ステータスバッジ */
@@ -135,7 +141,7 @@
 
 <div class="container">
     <h1>📊 ひろ兄ぃ専用 マーケティング計算機</h1>
-    <p class="subtitle">完成版：文字サイズ最大化＆視認性MAXモード</p>
+    <p class="subtitle">最終完成版：全項目サイズ統一＆視認性MAXモード</p>
 
     <div class="input-grid">
         <div class="input-group full-width">
