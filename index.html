@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティング計算ポータル</title>
+    <title>ひろ兄ぃ専用 マーケティング計算ポータル (完全版)</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -12,6 +12,7 @@
             --danger: #ef4444;
             --success: #10b981;
             --text: #1f2937;
+            --sub-text: #6b7280;
         }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -30,7 +31,9 @@
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        h1 { text-align: center; color: var(--primary); margin-bottom: 30px; font-size: 24px; }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 10px; font-size: 24px; }
+        p.subtitle { text-align: center; color: var(--sub-text); margin-bottom: 30px; font-size: 14px; }
+        
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .input-group { margin-bottom: 15px; }
         label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
@@ -38,7 +41,7 @@
             width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px;
             font-size: 16px; box-sizing: border-box; transition: 0.2s;
         }
-        input:focus { border-color: var(--primary); outline: none; }
+        input:focus { border-color: var(--primary); outline: none; background-color: #fefeff; }
         
         .result-section {
             margin-top: 30px; padding: 20px; border-radius: 10px; background: #f9fafb; border: 1px solid #e5e7eb;
@@ -51,8 +54,20 @@
         .safe { background-color: var(--success); }
         .danger { background-color: var(--danger); }
         
-        .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; }
-        .data-val { font-weight: bold; }
+        /* データ行のデザイン */
+        .data-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; /* 上揃え */
+            margin-bottom: 15px; 
+            font-size: 16px; 
+            border-bottom: 1px dashed #e5e7eb;
+            padding-bottom: 5px;
+        }
+        .data-label { font-weight: bold; }
+        .data-content { text-align: right; }
+        .data-val { font-weight: bold; display: block; }
+        .formula { font-size: 12px; color: var(--sub-text); display: block; margin-top: 2px; }
         
         @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
     </style>
@@ -61,6 +76,7 @@
 
 <div class="container">
     <h1>📊 ひろ兄ぃ専用 マーケティング計算機</h1>
+    <p class="subtitle">ロジックも完璧に見える化しといたよ♡</p>
     
     <div class="grid">
         <div class="input-group">
@@ -88,17 +104,55 @@
     <div class="result-section">
         <div class="result-title">① 予算とCPCの安全性 (1/3ルール)</div>
         <div id="status1" class="status-box" style="background:#ccc;">数値を入力してね♡</div>
-        <div class="data-row"><span>日予算:</span> <span class="data-val" id="dailyBudget">- 円</span></div>
-        <div class="data-row"><span>許容CPC上限:</span> <span class="data-val" id="safeCpc">- 円</span></div>
+        
+        <div class="data-row">
+            <span class="data-label">日予算:</span>
+            <div class="data-content">
+                <span class="data-val" id="dailyBudget">- 円</span>
+                <span class="formula" id="dailyBudgetFormula">(月予算 ÷ 30日)</span>
+            </div>
+        </div>
+        <div class="data-row">
+            <span class="data-label">許容CPC上限:</span>
+            <div class="data-content">
+                <span class="data-val" id="safeCpc">- 円</span>
+                <span class="formula" id="safeCpcFormula">(日予算 ÷ 3)</span>
+            </div>
+        </div>
     </div>
 
     <div class="result-section">
         <div class="result-title">② ゴールからの逆算シミュレーション</div>
         <div id="status2" class="status-box" style="background:#ccc;">計算待ち...</div>
-        <div class="data-row"><span>必要クリック数:</span> <span class="data-val" id="reqClicks">- 回</span></div>
-        <div class="data-row"><span>必要インプレッション:</span> <span class="data-val" id="reqImp">- 回</span></div>
-        <div class="data-row"><span>推定コスト:</span> <span class="data-val" id="estCost">- 円</span></div>
-        <div class="data-row"><span>予算残高:</span> <span class="data-val" id="budgetDiff">- 円</span></div>
+        
+        <div class="data-row">
+            <span class="data-label">必要クリック数:</span>
+            <div class="data-content">
+                <span class="data-val" id="reqClicks">- 回</span>
+                <span class="formula" id="reqClicksFormula">(目標CV ÷ CVR)</span>
+            </div>
+        </div>
+        <div class="data-row">
+            <span class="data-label">必要Imp数:</span>
+            <div class="data-content">
+                <span class="data-val" id="reqImp">- 回</span>
+                <span class="formula" id="reqImpFormula">(必要クリック ÷ CTR)</span>
+            </div>
+        </div>
+        <div class="data-row">
+            <span class="data-label">推定コスト:</span>
+            <div class="data-content">
+                <span class="data-val" id="estCost">- 円</span>
+                <span class="formula" id="estCostFormula">(必要クリック × CPC)</span>
+            </div>
+        </div>
+        <div class="data-row">
+            <span class="data-label">予算残高:</span>
+            <div class="data-content">
+                <span class="data-val" id="budgetDiff">- 円</span>
+                <span class="formula" id="budgetDiffFormula">(月予算 - 推定コスト)</span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -110,12 +164,16 @@ function calc() {
     const ctr = parseFloat(document.getElementById('ctr').value) || 0;
     const cvr = parseFloat(document.getElementById('cvr').value) || 0;
 
-    // 1. 1/3ルール判定
+    // --- 1. 1/3ルール判定 ---
     const daily = Math.floor(budget / 30);
     const safeMax = Math.floor(daily / 3);
     
+    // 表示更新
     document.getElementById('dailyBudget').innerText = daily.toLocaleString() + " 円";
+    document.getElementById('dailyBudgetFormula').innerText = `(${budget.toLocaleString()} ÷ 30)`;
+
     document.getElementById('safeCpc').innerText = safeMax.toLocaleString() + " 円";
+    document.getElementById('safeCpcFormula').innerText = `(${daily.toLocaleString()} ÷ 3)`;
 
     const status1 = document.getElementById('status1');
     if (budget > 0 && cpc > 0) {
@@ -126,25 +184,49 @@ function calc() {
             status1.className = "status-box danger";
             status1.innerText = "❌ 危険！CPCが高すぎます";
         }
+    } else {
+        status1.className = "status-box";
+        status1.style.background = "#ccc";
+        status1.innerText = "数値を入力してね♡";
     }
 
-    // 2. 逆算シミュレーション
+    // --- 2. 逆算シミュレーション ---
     let reqClicks = 0;
     let reqImp = 0;
     let estCost = 0;
 
-    if (targetCv > 0 && cvr > 0) reqClicks = Math.ceil(targetCv / (cvr / 100));
-    if (reqClicks > 0 && ctr > 0) reqImp = Math.ceil(reqClicks / (ctr / 100));
-    estCost = reqClicks * cpc;
+    // 必要クリック数 = 目標CV / CVR
+    if (targetCv > 0 && cvr > 0) {
+        reqClicks = Math.ceil(targetCv / (cvr / 100));
+        document.getElementById('reqClicksFormula').innerText = `(${targetCv} ÷ ${cvr}%)`;
+    } else {
+        document.getElementById('reqClicksFormula').innerText = `(目標CV ÷ CVR)`;
+    }
 
+    // 必要Imp = 必要クリック / CTR
+    if (reqClicks > 0 && ctr > 0) {
+        reqImp = Math.ceil(reqClicks / (ctr / 100));
+        document.getElementById('reqImpFormula').innerText = `(${reqClicks.toLocaleString()} ÷ ${ctr}%)`;
+    } else {
+        document.getElementById('reqImpFormula').innerText = `(必要クリック ÷ CTR)`;
+    }
+
+    // 推定コスト = 必要クリック × CPC
+    estCost = reqClicks * cpc;
+    document.getElementById('estCostFormula').innerText = `(${reqClicks.toLocaleString()} × ${cpc.toLocaleString()})`;
+
+    // 表示更新
     document.getElementById('reqClicks').innerText = reqClicks.toLocaleString() + " 回";
     document.getElementById('reqImp').innerText = reqImp.toLocaleString() + " 回";
     document.getElementById('estCost').innerText = estCost.toLocaleString() + " 円";
 
-    const status2 = document.getElementById('status2');
+    // 予算残高
     const diff = budget - estCost;
-    document.getElementById('budgetDiff').innerText = (diff >= 0 ? "+" : "") + diff.toLocaleString() + " 円";
+    const sign = diff >= 0 ? "+" : "";
+    document.getElementById('budgetDiff').innerText = sign + diff.toLocaleString() + " 円";
+    document.getElementById('budgetDiffFormula').innerText = `(${budget.toLocaleString()} - ${estCost.toLocaleString()})`;
 
+    const status2 = document.getElementById('status2');
     if (budget > 0 && estCost > 0) {
         if (estCost <= budget) {
             status2.className = "status-box safe";
@@ -153,6 +235,10 @@ function calc() {
             status2.className = "status-box danger";
             status2.innerText = "❌ 予算オーバーです！";
         }
+    } else {
+        status2.className = "status-box";
+        status2.style.background = "#ccc";
+        status2.innerText = "計算待ち...";
     }
 }
 </script>
