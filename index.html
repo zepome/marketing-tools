@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティング計算ポータル (究極版)</title>
+    <title>ひろ兄ぃ専用 マーケティング計算ポータル (完全究極版)</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -12,7 +12,7 @@
             --danger: #ef4444;
             --success: #10b981;
             --text: #1f2937;
-            --sub-text: #9ca3af;
+            --sub-text: #d1d5db; /* かなり薄いグレー */
             --border: #e5e7eb;
         }
         body {
@@ -26,14 +26,14 @@
         }
         .container {
             width: 100%;
-            max-width: 850px;
+            max-width: 900px;
             background: var(--card-bg);
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
         h1 { text-align: center; color: var(--primary); margin: 0 0 10px 0; font-size: 24px; }
-        p.subtitle { text-align: center; color: var(--sub-text); margin-bottom: 30px; font-size: 14px; }
+        p.subtitle { text-align: center; color: #9ca3af; margin-bottom: 30px; font-size: 14px; }
         
         /* 入力グリッド */
         .input-grid {
@@ -64,45 +64,58 @@
             border-bottom: 2px solid var(--border); padding-bottom: 10px; color: var(--text);
         }
 
-        /* ステータスバッジ（判定表示） */
+        /* ステータスバッジ */
         .status-box {
             padding: 12px; border-radius: 8px; color: white; font-weight: bold;
             text-align: center; margin-bottom: 20px; font-size: 16px;
             display: flex; justify-content: center; align-items: center; gap: 10px;
         }
-        /* 判定理由の小さい文字 */
         .reason-text {
             font-size: 14px; font-weight: normal; opacity: 0.9;
-            background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 4px;
+            background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 4px;
         }
         
-        /* データ行のデザイン */
+        /* データ行のデザイン（3カラムレイアウト） */
         .data-row {
             display: flex;
             justify-content: space-between;
-            align-items: center; /* 上下中央揃え */
-            padding: 12px 0; /* 少し広げた */
+            align-items: center;
+            padding: 10px 0;
             border-bottom: 1px dashed var(--border);
         }
         .data-row:last-child { border-bottom: none; }
 
-        .label { font-weight: bold; font-size: 15px; color: var(--text); white-space: nowrap; }
-        
-        /* 右側のラッパー（数値と式を横並びにする） */
-        .value-wrapper {
-            text-align: right;
-            display: flex;
-            align-items: baseline; /* ベースラインで揃える */
-            justify-content: flex-end;
-            gap: 10px; /* 数値と式の間隔 */
-            flex-wrap: wrap; /* スマホで溢れたら折り返す */
+        /* 左：項目名 */
+        .label { 
+            font-weight: bold; font-size: 15px; color: var(--text); 
+            width: 25%; /* 幅固定 */
+            white-space: nowrap;
         }
-        .value { font-weight: bold; font-size: 20px; color: var(--text); }
-        .formula { font-size: 13px; color: var(--sub-text); white-space: nowrap; }
+        
+        /* 中：計算式（真ん中にドーンと表示） */
+        .formula-center { 
+            flex-grow: 1; 
+            text-align: center; 
+            font-size: 18px; /* 数値と同じくらいの大きさ */
+            font-weight: bold;
+            color: var(--sub-text); /* 薄いグレー */
+            font-family: Consolas, Monaco, monospace; /* 等幅フォントっぽく */
+        }
+        
+        /* 右：数値 */
+        .value { 
+            font-weight: bold; font-size: 20px; color: var(--text); 
+            width: 25%; /* 幅固定 */
+            text-align: right;
+            white-space: nowrap;
+        }
 
         @media (max-width: 600px) {
             .input-grid { grid-template-columns: 1fr; }
-            .value-wrapper { flex-direction: column; align-items: flex-end; gap: 2px; } /* スマホは縦並びに戻す */
+            .data-row { flex-direction: column; align-items: flex-start; gap: 5px; }
+            .label, .formula-center, .value { width: 100%; text-align: right; }
+            .label { text-align: left; }
+            .formula-center { text-align: right; font-size: 14px; }
         }
     </style>
 </head>
@@ -110,7 +123,7 @@
 
 <div class="container">
     <h1>📊 ひろ兄ぃ専用 マーケティング計算機</h1>
-    <p class="subtitle">究極完全版：ロジック＆判定理由可視化モード</p>
+    <p class="subtitle">完全究極版：計算式センター表示モード</p>
 
     <div class="input-grid">
         <div class="input-group full-width">
@@ -121,17 +134,20 @@
             <label>🎯 目標CV数 (件)</label>
             <input type="number" id="targetCv" placeholder="例: 2" oninput="calc()">
         </div>
+        
         <div class="input-group">
-            <label>👆 推定CPC (円)</label>
-            <input type="number" id="cpc" placeholder="例: 200" oninput="calc()">
+            <label>🤝 想定CVR (%)</label>
+            <input type="number" id="cvr" placeholder="例: 1.0" step="0.1" oninput="calc()">
         </div>
+        
         <div class="input-group">
             <label>👀 想定CTR (%)</label>
             <input type="number" id="ctr" placeholder="例: 4.0" step="0.1" oninput="calc()">
         </div>
+
         <div class="input-group">
-            <label>🤝 想定CVR (%)</label>
-            <input type="number" id="cvr" placeholder="例: 1.0" step="0.1" oninput="calc()">
+            <label>👆 推定CPC (円)</label>
+            <input type="number" id="cpc" placeholder="例: 200" oninput="calc()">
         </div>
     </div>
 
@@ -141,17 +157,13 @@
         
         <div class="data-row">
             <span class="label">日予算</span>
-            <div class="value-wrapper">
-                <span class="value" id="dailyBudget">- 円</span>
-                <span class="formula" id="dailyBudgetFormula"></span>
-            </div>
+            <span class="formula-center" id="dailyBudgetFormula"></span>
+            <span class="value" id="dailyBudget">- 円</span>
         </div>
         <div class="data-row">
             <span class="label">許容CPC上限</span>
-            <div class="value-wrapper">
-                <span class="value" id="safeCpc">- 円</span>
-                <span class="formula" id="safeCpcFormula"></span>
-            </div>
+            <span class="formula-center" id="safeCpcFormula"></span>
+            <span class="value" id="safeCpc">- 円</span>
         </div>
     </div>
 
@@ -161,31 +173,23 @@
 
         <div class="data-row">
             <span class="label">必要クリック数</span>
-            <div class="value-wrapper">
-                <span class="value" id="reqClicks">- 回</span>
-                <span class="formula" id="reqClicksFormula"></span>
-            </div>
+            <span class="formula-center" id="reqClicksFormula"></span>
+            <span class="value" id="reqClicks">- 回</span>
         </div>
         <div class="data-row">
             <span class="label">必要Imp数</span>
-            <div class="value-wrapper">
-                <span class="value" id="reqImp">- 回</span>
-                <span class="formula" id="reqImpFormula"></span>
-            </div>
+            <span class="formula-center" id="reqImpFormula"></span>
+            <span class="value" id="reqImp">- 回</span>
         </div>
         <div class="data-row">
             <span class="label">推定コスト</span>
-            <div class="value-wrapper">
-                <span class="value" id="estCost">- 円</span>
-                <span class="formula" id="estCostFormula"></span>
-            </div>
+            <span class="formula-center" id="estCostFormula"></span>
+            <span class="value" id="estCost">- 円</span>
         </div>
         <div class="data-row">
             <span class="label">予算残高</span>
-            <div class="value-wrapper">
-                <span class="value" id="budgetDiff">- 円</span>
-                <span class="formula" id="budgetDiffFormula"></span>
-            </div>
+            <span class="formula-center" id="budgetDiffFormula"></span>
+            <span class="value" id="budgetDiff">- 円</span>
         </div>
     </div>
 </div>
@@ -207,13 +211,16 @@ function calc() {
     document.getElementById('dailyBudget').innerText = daily.toLocaleString() + " 円";
     document.getElementById('safeCpc').innerText = safeMax.toLocaleString() + " 円";
 
-    // 式更新（横並び）
+    // 式更新（中央表示）
     if(budget > 0) {
-        document.getElementById('dailyBudgetFormula').innerText = `(${budget.toLocaleString()} ÷ 30)`;
-        document.getElementById('safeCpcFormula').innerText = `(${daily.toLocaleString()} ÷ 3)`;
+        document.getElementById('dailyBudgetFormula').innerText = `${budget.toLocaleString()} ÷ 30`;
+        document.getElementById('safeCpcFormula').innerText = `${daily.toLocaleString()} ÷ 3`;
+    } else {
+        document.getElementById('dailyBudgetFormula').innerText = "";
+        document.getElementById('safeCpcFormula').innerText = "";
     }
 
-    // ステータス更新（比較数値付き）
+    // ステータス更新
     const status1 = document.getElementById('status1');
     if (budget > 0 && cpc > 0) {
         if (cpc <= safeMax) {
@@ -236,7 +243,7 @@ function calc() {
     // 必要クリック数
     if (targetCv > 0 && cvr > 0) {
         reqClicks = Math.ceil(targetCv / (cvr / 100));
-        document.getElementById('reqClicksFormula').innerText = `(${targetCv} ÷ ${cvr}%)`;
+        document.getElementById('reqClicksFormula').innerText = `${targetCv} ÷ ${cvr}%`;
     } else {
         document.getElementById('reqClicksFormula').innerText = "";
     }
@@ -244,7 +251,7 @@ function calc() {
     // 必要Imp
     if (reqClicks > 0 && ctr > 0) {
         reqImp = Math.ceil(reqClicks / (ctr / 100));
-        document.getElementById('reqImpFormula').innerText = `(${reqClicks.toLocaleString()} ÷ ${ctr}%)`;
+        document.getElementById('reqImpFormula').innerText = `${reqClicks.toLocaleString()} ÷ ${ctr}%`;
     } else {
         document.getElementById('reqImpFormula').innerText = "";
     }
@@ -252,7 +259,7 @@ function calc() {
     // 推定コスト
     estCost = reqClicks * cpc;
     if (estCost > 0) {
-        document.getElementById('estCostFormula').innerText = `(${reqClicks.toLocaleString()} × ${cpc.toLocaleString()})`;
+        document.getElementById('estCostFormula').innerText = `${reqClicks.toLocaleString()} × ${cpc.toLocaleString()}`;
     } else {
         document.getElementById('estCostFormula').innerText = "";
     }
@@ -268,19 +275,18 @@ function calc() {
     document.getElementById('budgetDiff').innerText = sign + diff.toLocaleString() + " 円";
     
     if (budget > 0 && estCost > 0) {
-        document.getElementById('budgetDiffFormula').innerText = `(${budget.toLocaleString()} - ${estCost.toLocaleString()})`;
+        document.getElementById('budgetDiffFormula').innerText = `${budget.toLocaleString()} - ${estCost.toLocaleString()}`;
     } else {
         document.getElementById('budgetDiffFormula').innerText = "";
     }
 
-    // ステータス更新（比較数値付き）
+    // ステータス更新
     const status2 = document.getElementById('status2');
     if (budget > 0 && estCost > 0) {
         if (estCost <= budget) {
             status2.style.background = "#10b981"; 
             status2.innerHTML = `✅ 予算内で達成可能 <span class="reason-text">(余り ${diff.toLocaleString()}円)</span>`;
         } else {
-            const shortage = Math.abs(diff);
             status2.style.background = "#ef4444"; 
             status2.innerHTML = `❌ 予算オーバー <span class="reason-text">(${estCost.toLocaleString()} > ${budget.toLocaleString()})</span>`;
         }
