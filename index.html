@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティング計算ポータル (完全究極版)</title>
+    <title>ひろ兄ぃ専用 マーケティング計算ポータル (視認性強化版)</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -11,8 +11,8 @@
             --primary: #4f46e5;
             --danger: #ef4444;
             --success: #10b981;
-            --text: #1f2937;
-            --sub-text: #d1d5db; /* かなり薄いグレー */
+            --text: #1f2937;       /* メインの黒 */
+            --sub-text: #8899a6;   /* 計算式用：濃いめのグレーに変更！ */
             --border: #e5e7eb;
         }
         body {
@@ -33,7 +33,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
         h1 { text-align: center; color: var(--primary); margin: 0 0 10px 0; font-size: 24px; }
-        p.subtitle { text-align: center; color: #9ca3af; margin-bottom: 30px; font-size: 14px; }
+        p.subtitle { text-align: center; color: #6b7280; margin-bottom: 30px; font-size: 14px; }
         
         /* 入力グリッド */
         .input-grid {
@@ -75,12 +75,12 @@
             background: rgba(0,0,0,0.2); padding: 2px 8px; border-radius: 4px;
         }
         
-        /* データ行のデザイン（3カラムレイアウト） */
+        /* データ行のデザイン */
         .data-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px dashed var(--border);
         }
         .data-row:last-child { border-bottom: none; }
@@ -88,24 +88,24 @@
         /* 左：項目名 */
         .label { 
             font-weight: bold; font-size: 15px; color: var(--text); 
-            width: 25%; /* 幅固定 */
+            width: 25%; 
             white-space: nowrap;
         }
         
-        /* 中：計算式（真ん中にドーンと表示） */
+        /* 中：計算式（ここを修正！） */
         .formula-center { 
             flex-grow: 1; 
             text-align: center; 
-            font-size: 18px; /* 数値と同じくらいの大きさ */
-            font-weight: bold;
-            color: var(--sub-text); /* 薄いグレー */
-            font-family: Consolas, Monaco, monospace; /* 等幅フォントっぽく */
+            font-size: 20px;        /* 数値と同じ大きさに！ */
+            font-weight: bold;      /* 数値と同じ太さに！ */
+            color: var(--sub-text); /* 濃いめのグレーに！ */
+            /* font-family削除：数値と同じフォントで表示 */
         }
         
         /* 右：数値 */
         .value { 
             font-weight: bold; font-size: 20px; color: var(--text); 
-            width: 25%; /* 幅固定 */
+            width: 25%; 
             text-align: right;
             white-space: nowrap;
         }
@@ -115,7 +115,7 @@
             .data-row { flex-direction: column; align-items: flex-start; gap: 5px; }
             .label, .formula-center, .value { width: 100%; text-align: right; }
             .label { text-align: left; }
-            .formula-center { text-align: right; font-size: 14px; }
+            .formula-center { text-align: right; font-size: 16px; }
         }
     </style>
 </head>
@@ -123,7 +123,7 @@
 
 <div class="container">
     <h1>📊 ひろ兄ぃ専用 マーケティング計算機</h1>
-    <p class="subtitle">完全究極版：計算式センター表示モード</p>
+    <p class="subtitle">視認性強化版：フォント統一＆カラー調整済み</p>
 
     <div class="input-grid">
         <div class="input-group full-width">
@@ -134,17 +134,14 @@
             <label>🎯 目標CV数 (件)</label>
             <input type="number" id="targetCv" placeholder="例: 2" oninput="calc()">
         </div>
-        
         <div class="input-group">
             <label>🤝 想定CVR (%)</label>
             <input type="number" id="cvr" placeholder="例: 1.0" step="0.1" oninput="calc()">
         </div>
-        
         <div class="input-group">
             <label>👀 想定CTR (%)</label>
             <input type="number" id="ctr" placeholder="例: 4.0" step="0.1" oninput="calc()">
         </div>
-
         <div class="input-group">
             <label>👆 推定CPC (円)</label>
             <input type="number" id="cpc" placeholder="例: 200" oninput="calc()">
@@ -211,7 +208,7 @@ function calc() {
     document.getElementById('dailyBudget').innerText = daily.toLocaleString() + " 円";
     document.getElementById('safeCpc').innerText = safeMax.toLocaleString() + " 円";
 
-    // 式更新（中央表示）
+    // 式更新
     if(budget > 0) {
         document.getElementById('dailyBudgetFormula').innerText = `${budget.toLocaleString()} ÷ 30`;
         document.getElementById('safeCpcFormula').innerText = `${daily.toLocaleString()} ÷ 3`;
