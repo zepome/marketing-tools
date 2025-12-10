@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティング計算ポータル (最終版)</title>
+    <title>ひろ兄ぃ専用 マーケティング計算ポータル (用語集付き)</title>
     <style>
         :root {
-            --bg-color: #f0f2f5;   /* 外側の背景（薄いグレー） */
-            --card-bg: #ffffef;    /* ★変更★ 計算機本体の背景（クリーム色） */
+            --bg-color: #f0f2f5;   /* 外側の背景 */
+            --card-bg: #ffffef;    /* 計算機本体（クリーム色） */
             --primary: #4f46e5;
-            --danger: #ef4444;
+            --danger: #ef4444;     /* 赤色 */
             --success: #10b981;
-            --text: #1f2937;       /* メインの黒 */
+            --text: #1f2937;       /* 黒 */
             --sub-text: #555555;   /* 計算式用：濃いグレー */
+            --legend-text: #6b7280; /* 用語集用：前のサブタイトルの色 */
             --border: #e5e7eb;
         }
         body {
@@ -27,13 +28,23 @@
         .container {
             width: 100%;
             max-width: 900px;
-            background: var(--card-bg); /* ここが #ffffef になりました！ */
+            background: var(--card-bg);
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
+        
         h1 { text-align: center; color: var(--primary); margin: 0 0 10px 0; font-size: 24px; }
-        p.subtitle { text-align: center; color: #6b7280; margin-bottom: 30px; font-size: 14px; }
+
+        /* ★追加★ 右寄せの用語集エリア */
+        .legend-box {
+            text-align: right;
+            font-size: 12px;
+            color: var(--legend-text);
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        .legend-item { display: block; }
         
         /* 入力グリッド */
         .input-grid {
@@ -55,32 +66,32 @@
         }
         
         .input-group input {
-            width: 100%; padding: 14px; border: 2px solid #d1d5db; /* 枠線を少し濃くして見やすく */
+            width: 100%; padding: 14px; border: 2px solid #d1d5db; 
             border-radius: 10px;
             font-size: 20px; 
             font-weight: bold;
-            background-color: #ffffff; /* 入力欄の中は白くして文字を見やすく */
+            background-color: #ffffff; 
             box-sizing: border-box; transition: 0.2s; outline: none;
         }
         .input-group input:focus { border-color: var(--primary); background-color: #ffffff; }
 
         /* 結果セクション */
         .result-section {
-            background: #ffffff; /* ★変更★ 結果エリアは見やすいように白背景に！ */
-            border: 2px solid var(--border); /* 枠線をしっかり */
+            background: #ffffff; 
+            border: 2px solid var(--border); 
             border-radius: 12px;
             padding: 25px;
             margin-bottom: 25px;
         }
         
-        /* ★修正★ タイトルを900（Black）で超極太に！ */
+        /* タイトル設定 */
         .result-title {
-            font-weight: 900;       /* ← 800から900にアップ！一番太い設定 */
-            font-size: 22px;        /* ← サイズも少しアップ */
+            font-weight: 900;       /* 超極太 */
+            font-size: 22px;        
             margin-bottom: 15px;
             border-bottom: 2px solid var(--border); 
             padding-bottom: 10px; 
-            color: #000000;         /* ← 色も完全な黒にして強調 */
+            color: #000000;         
             letter-spacing: 0.5px;
         }
 
@@ -129,6 +140,11 @@
             text-align: right;
             white-space: nowrap;
         }
+        
+        /* 赤字用のクラス */
+        .text-danger {
+            color: var(--danger) !important;
+        }
 
         @media (max-width: 600px) {
             .input-grid { grid-template-columns: 1fr; }
@@ -136,6 +152,7 @@
             .label, .formula-center, .value { width: 100%; text-align: right; }
             .label { text-align: left; }
             .formula-center { text-align: right; font-size: 16px; color: var(--sub-text); }
+            .legend-box { text-align: left; } /* スマホでは左寄せで見やすく */
         }
     </style>
 </head>
@@ -143,7 +160,12 @@
 
 <div class="container">
     <h1>📊 ひろ兄ぃ専用 マーケティング計算機</h1>
-    <p class="subtitle">最終完成版：背景クリーム色＆タイトル超極太モード</p>
+    
+    <div class="legend-box">
+        <span class="legend-item">CVR（Conversion Rate）・・・顧客転換率。サイトに来た人のうち、何人がCVしたか。</span>
+        <span class="legend-item">CPC（Cost Per Click）・・・クリック単価。広告が1回クリックされるのにかかった費用。</span>
+        <span class="legend-item">CTR（Click Through Rate）・・・広告が表示されたうち、何回クリックされたかの割合。</span>
+    </div>
 
     <div class="input-grid">
         <div class="input-group full-width">
@@ -280,7 +302,15 @@ function calc() {
 
     const diff = budget - estCost;
     const sign = diff >= 0 ? "+" : "";
-    document.getElementById('budgetDiff').innerText = sign + diff.toLocaleString() + " 円";
+    const budgetDiffElem = document.getElementById('budgetDiff');
+    
+    budgetDiffElem.innerText = sign + diff.toLocaleString() + " 円";
+    
+    if (diff < 0) {
+        budgetDiffElem.style.color = "#ef4444"; 
+    } else {
+        budgetDiffElem.style.color = ""; 
+    }
     
     if (budget > 0 && estCost > 0) {
         document.getElementById('budgetDiffFormula').innerText = `${budget.toLocaleString()} - ${estCost.toLocaleString()}`;
