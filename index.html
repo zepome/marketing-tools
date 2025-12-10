@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティング計算ポータル (用語集付き)</title>
+    <title>ひろ兄ぃ専用 マーケティング計算ポータル (最終形態)</title>
     <style>
         :root {
             --bg-color: #f0f2f5;   /* 外側の背景 */
@@ -13,7 +13,7 @@
             --success: #10b981;
             --text: #1f2937;       /* 黒 */
             --sub-text: #555555;   /* 計算式用：濃いグレー */
-            --legend-text: #6b7280; /* 用語集用：前のサブタイトルの色 */
+            --legend-text: #6b7280; /* 用語集用：グレー */
             --border: #e5e7eb;
         }
         body {
@@ -36,15 +36,20 @@
         
         h1 { text-align: center; color: var(--primary); margin: 0 0 10px 0; font-size: 24px; }
 
-        /* ★追加★ 右寄せの用語集エリア */
+        /* ★修正★ 用語集エリアのレイアウト */
+        .legend-wrapper {
+            display: flex;
+            justify-content: flex-end; /* 箱全体を右側に寄せる */
+            margin-bottom: 30px;
+        }
         .legend-box {
-            text-align: right;
+            text-align: left; /* 箱の中身は左揃え（Cを縦に揃えるため！） */
             font-size: 12px;
             color: var(--legend-text);
-            margin-bottom: 30px;
             line-height: 1.5;
+            display: inline-block;
         }
-        .legend-item { display: block; }
+        .legend-item { display: block; } /* 改行させる */
         
         /* 入力グリッド */
         .input-grid {
@@ -152,7 +157,7 @@
             .label, .formula-center, .value { width: 100%; text-align: right; }
             .label { text-align: left; }
             .formula-center { text-align: right; font-size: 16px; color: var(--sub-text); }
-            .legend-box { text-align: left; } /* スマホでは左寄せで見やすく */
+            .legend-wrapper { justify-content: flex-start; }
         }
     </style>
 </head>
@@ -161,10 +166,12 @@
 <div class="container">
     <h1>📊 ひろ兄ぃ専用 マーケティング計算機</h1>
     
-    <div class="legend-box">
-        <span class="legend-item">CVR（Conversion Rate）・・・顧客転換率。サイトに来た人のうち、何人がCVしたか。</span>
-        <span class="legend-item">CPC（Cost Per Click）・・・クリック単価。広告が1回クリックされるのにかかった費用。</span>
-        <span class="legend-item">CTR（Click Through Rate）・・・広告が表示されたうち、何回クリックされたかの割合。</span>
+    <div class="legend-wrapper">
+        <div class="legend-box">
+            <span class="legend-item">CTR（Click Through Rate）・・・広告が表示されたうち、何回クリックされたかの割合。</span>
+            <span class="legend-item">CPC（Cost Per Click）・・・クリック単価。広告が1回クリックされるのにかかった費用。</span>
+            <span class="legend-item">CVR（Conversion Rate）・・・顧客転換率。サイトに来た人のうち、何人がCVしたか。</span>
+        </div>
     </div>
 
     <div class="input-grid">
