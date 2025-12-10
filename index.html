@@ -237,4 +237,24 @@ function calc() {
     if (budget > 0 && estCost > 0) {
         document.getElementById('budgetDiffFormula').innerText = `(${budget.toLocaleString()} - ${estCost.toLocaleString()})`;
     } else {
-        document.getElementById('budget
+        document.getElementById('budgetDiffFormula').innerText = "";
+    }
+
+    const status2 = document.getElementById('status2');
+    if (budget > 0 && estCost > 0) {
+        if (estCost <= budget) {
+            status2.className = "status-box safe";
+            status2.innerText = "✅ 予算内で達成可能！";
+        } else {
+            status2.className = "status-box danger";
+            status2.innerText = "❌ 予算オーバーです！";
+        }
+    } else {
+        status2.className = "status-box";
+        status2.style.background = "#ccc";
+        status2.innerText = "計算待ち...";
+    }
+}
+</script>
+</body>
+</html>
