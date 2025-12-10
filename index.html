@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティング計算ポータル (真・完全版)</title>
+    <title>ひろ兄ぃ専用 マーケティング計算ポータル (完成版)</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -12,7 +12,7 @@
             --danger: #ef4444;
             --success: #10b981;
             --text: #1f2937;       /* メインの黒 */
-            --sub-text: #555555;   /* ★修正★ かなり濃いグレーに変更！ */
+            --sub-text: #555555;   /* 計算式用：濃いグレー */
             --border: #e5e7eb;
         }
         body {
@@ -44,10 +44,19 @@
         }
         .full-width { grid-column: 1 / -1; }
         
-        .input-group label { display: block; font-weight: bold; margin-bottom: 8px; font-size: 14px; }
+        /* ★修正★ 項目名のフォントサイズを大きく！ */
+        .input-group label { 
+            display: block; 
+            font-weight: bold; 
+            margin-bottom: 8px; 
+            font-size: 18px; /* ← 14pxから18pxにアップ！ */
+            color: var(--text);
+        }
+        
         .input-group input {
             width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px;
-            font-size: 16px; box-sizing: border-box; transition: 0.2s; outline: none;
+            font-size: 18px; /* 入力文字も少し大きくして見やすくしたよ */
+            box-sizing: border-box; transition: 0.2s; outline: none;
         }
         .input-group input:focus { border-color: var(--primary); background-color: #f9faff; }
 
@@ -88,17 +97,17 @@
         /* 左：項目名 */
         .label { 
             font-weight: bold; font-size: 15px; color: var(--text); 
-            width: 20%; /* 少し狭くして中央を広く */
+            width: 20%; 
             white-space: nowrap;
         }
         
-        /* 中：計算式（ここをガッツリ修正！） */
+        /* 中：計算式 */
         .formula-center { 
             flex-grow: 1; 
             text-align: center; 
-            font-size: 20px;        /* ★右側の数値と同じサイズ★ */
-            font-weight: bold;      /* ★右側の数値と同じ太さ★ */
-            color: var(--sub-text); /* ★濃いグレー★ */
+            font-size: 20px;        
+            font-weight: bold;      
+            color: var(--sub-text); 
             letter-spacing: 0.5px;
         }
         
@@ -123,7 +132,7 @@
 
 <div class="container">
     <h1>📊 ひろ兄ぃ専用 マーケティング計算機</h1>
-    <p class="subtitle">真・完全版：フォント完全統一＆くっきり表示モード</p>
+    <p class="subtitle">完成版：入力項目見やすさMAXモード</p>
 
     <div class="input-grid">
         <div class="input-group full-width">
