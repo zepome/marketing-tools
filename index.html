@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティングポータル (視認性最適化版)</title>
+    <title>ひろ兄ぃ専用 マーケティングポータル (デザイン完全修正版)</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -18,6 +18,12 @@
             --win-bg: #dcfce7;
             --lose-bg: #fee2e2;
         }
+        
+        /* 全要素に box-sizing を適用（これでサイズ計算ズレを防ぐ） */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             background-color: var(--bg-color);
@@ -56,34 +62,36 @@
             top: -14px;
         }
 
-        /* ★修正★ 用語集のグリッドレイアウト化 */
+        /* ★修正★ 用語集の完全整列 (CSS Grid) */
+        .legend-wrapper {
+            display: flex;
+            justify-content: flex-end; /* 右寄せ */
+            margin-bottom: 30px;
+            width: 100%;
+        }
         .legend-container {
             display: grid;
-            /* 1列目:用語(自動幅) / 2列目:中黒(自動幅) / 3列目:説明(残り全部) */
-            grid-template-columns: max-content max-content 1fr; 
-            gap: 5px 15px; /* 縦の間隔 5px, 横の間隔 15px */
-            margin-bottom: 30px;
+            /* 1列目:用語(文字幅に合わせる) / 2列目:中黒(固定幅) / 3列目:説明(残り幅) */
+            grid-template-columns: max-content 40px 1fr; 
+            gap: 5px 0; /* 縦の間隔5px, 横の間隔は0(列定義で調整) */
             font-size: 12px;
             color: var(--legend-text);
             line-height: 1.6;
-            justify-content: end; /* 全体を右寄りに配置したい場合 */
-        }
-        /* コンテナ自体を右寄せにするためのラッパー */
-        .legend-wrapper {
-            display: flex;
-            justify-content: flex-end;
+            max-width: 100%;
         }
         
         .legend-term {
-            text-align: left;
-            white-space: nowrap; /* 折り返し禁止 */
+            text-align: right; /* 用語は右揃えで見やすく */
+            white-space: nowrap;
+            font-weight: bold; /* 少し強調 */
+            color: var(--sub-text);
         }
         .legend-sep {
-            text-align: center;
-            color: #9ca3af; /* 少し薄くする */
+            text-align: center; /* 中黒は中央 */
+            color: #9ca3af;
         }
         .legend-desc {
-            text-align: left;
+            text-align: left; /* 説明は左揃え */
         }
         
         /* 入力グリッド共通 */
@@ -94,7 +102,7 @@
         .input-group input {
             width: 100%; padding: 14px; border: 2px solid #d1d5db; border-radius: 10px;
             font-size: 18px; font-weight: bold; background-color: #ffffff;
-            box-sizing: border-box; transition: 0.2s; outline: none;
+            transition: 0.2s; outline: none;
         }
         .input-group input:focus { border-color: var(--primary); }
 
@@ -129,6 +137,17 @@
         .ab-card.winner { border-color: var(--success); background-color: var(--win-bg); transform: scale(1.02); }
         .ab-card.loser { opacity: 0.7; background-color: var(--bg-color); }
         .ab-title { text-align: center; font-weight: bold; margin-bottom: 10px; font-size: 18px; }
+        
+        /* ★修正★ A/Bテスト内のinputを正しく枠内に収める */
+        .ab-card input {
+            width: 100%; /* 親要素いっぱい */
+            padding: 10px; 
+            margin-bottom: 8px; 
+            border: 1px solid #ccc; 
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
         .ab-result-row { display: flex; justify-content: space-between; margin-top: 10px; font-size: 14px; }
         .ab-val { font-weight: bold; font-size: 16px; }
         .better { color: var(--success); font-weight: 900; text-decoration: underline; }
@@ -139,14 +158,14 @@
             .label, .formula-center, .value { width: 100%; text-align: right; }
             .label { text-align: left; }
             
-            /* スマホ時は用語集を縦積みに変更 */
-            .legend-wrapper { display: block; }
+            /* スマホ時：用語集を縦積みに変更して見やすく */
+            .legend-wrapper { justify-content: flex-start; }
             .legend-container { 
                 grid-template-columns: 1fr; /* 1列にする */
                 gap: 5px; 
             }
             .legend-sep { display: none; } /* スマホでは中黒を消す */
-            .legend-term { font-weight: bold; margin-top: 10px; color: var(--primary); }
+            .legend-term { text-align: left; font-weight: bold; margin-top: 10px; color: var(--primary); }
             .legend-desc { margin-left: 10px; }
         }
     </style>
@@ -365,10 +384,10 @@
         <div class="ab-card" id="cardA">
             <div class="ab-title">パターン A</div>
             <div style="margin-bottom:10px;">
-                <input type="number" id="ab_imp_a" placeholder="Imp (表示回数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_click_a" placeholder="Click (クリック数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_cv_a" placeholder="CV (獲得数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_cost_a" placeholder="Cost (費用)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_imp_a" placeholder="Imp (表示回数)" oninput="calcAb()">
+                <input type="number" id="ab_click_a" placeholder="Click (クリック数)" oninput="calcAb()">
+                <input type="number" id="ab_cv_a" placeholder="CV (獲得数)" oninput="calcAb()">
+                <input type="number" id="ab_cost_a" placeholder="Cost (費用)" oninput="calcAb()">
             </div>
             <hr>
             <div class="ab-result-row"><span>CTR:</span> <span class="ab-val" id="res_ctr_a">- %</span></div>
@@ -379,10 +398,10 @@
         <div class="ab-card" id="cardB">
             <div class="ab-title">パターン B</div>
             <div style="margin-bottom:10px;">
-                <input type="number" id="ab_imp_b" placeholder="Imp (表示回数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_click_b" placeholder="Click (クリック数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_cv_b" placeholder="CV (獲得数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_cost_b" placeholder="Cost (費用)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_imp_b" placeholder="Imp (表示回数)" oninput="calcAb()">
+                <input type="number" id="ab_click_b" placeholder="Click (クリック数)" oninput="calcAb()">
+                <input type="number" id="ab_cv_b" placeholder="CV (獲得数)" oninput="calcAb()">
+                <input type="number" id="ab_cost_b" placeholder="Cost (費用)" oninput="calcAb()">
             </div>
             <hr>
             <div class="ab-result-row"><span>CTR:</span> <span class="ab-val" id="res_ctr_b">- %</span></div>
