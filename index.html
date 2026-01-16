@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティングポータル (デザイン完全修正版)</title>
+    <title>ひろ兄ぃ専用 マーケティングポータル (最終完成版)</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -19,7 +19,7 @@
             --lose-bg: #fee2e2;
         }
         
-        /* 全要素に box-sizing を適用（これでサイズ計算ズレを防ぐ） */
+        /* 全要素に box-sizing を適用 */
         *, *::before, *::after {
             box-sizing: border-box;
         }
@@ -62,18 +62,21 @@
             top: -14px;
         }
 
-        /* ★修正★ 用語集の完全整列 (CSS Grid) */
+        /* ★修正★ 用語集レイアウト */
         .legend-wrapper {
             display: flex;
-            justify-content: flex-end; /* 右寄せ */
+            justify-content: flex-end; /* 全体を右側に寄せる */
             margin-bottom: 30px;
             width: 100%;
         }
         .legend-container {
             display: grid;
-            /* 1列目:用語(文字幅に合わせる) / 2列目:中黒(固定幅) / 3列目:説明(残り幅) */
+            /* 1列目: 用語 (一番長い文字幅に合わせる) 
+               2列目: 中黒 (40px固定) 
+               3列目: 説明 (残り全部) 
+            */
             grid-template-columns: max-content 40px 1fr; 
-            gap: 5px 0; /* 縦の間隔5px, 横の間隔は0(列定義で調整) */
+            gap: 5px 0; 
             font-size: 12px;
             color: var(--legend-text);
             line-height: 1.6;
@@ -81,17 +84,17 @@
         }
         
         .legend-term {
-            text-align: right; /* 用語は右揃えで見やすく */
+            text-align: left; /* ★ここを修正：左寄せに変更★ */
             white-space: nowrap;
-            font-weight: bold; /* 少し強調 */
+            font-weight: bold;
             color: var(--sub-text);
         }
         .legend-sep {
-            text-align: center; /* 中黒は中央 */
+            text-align: center;
             color: #9ca3af;
         }
         .legend-desc {
-            text-align: left; /* 説明は左揃え */
+            text-align: left;
         }
         
         /* 入力グリッド共通 */
@@ -138,9 +141,8 @@
         .ab-card.loser { opacity: 0.7; background-color: var(--bg-color); }
         .ab-title { text-align: center; font-weight: bold; margin-bottom: 10px; font-size: 18px; }
         
-        /* ★修正★ A/Bテスト内のinputを正しく枠内に収める */
         .ab-card input {
-            width: 100%; /* 親要素いっぱい */
+            width: 100%; 
             padding: 10px; 
             margin-bottom: 8px; 
             border: 1px solid #ccc; 
@@ -158,13 +160,13 @@
             .label, .formula-center, .value { width: 100%; text-align: right; }
             .label { text-align: left; }
             
-            /* スマホ時：用語集を縦積みに変更して見やすく */
+            /* スマホ時：用語集を縦積みに変更 */
             .legend-wrapper { justify-content: flex-start; }
             .legend-container { 
-                grid-template-columns: 1fr; /* 1列にする */
+                grid-template-columns: 1fr; 
                 gap: 5px; 
             }
-            .legend-sep { display: none; } /* スマホでは中黒を消す */
+            .legend-sep { display: none; }
             .legend-term { text-align: left; font-weight: bold; margin-top: 10px; color: var(--primary); }
             .legend-desc { margin-left: 10px; }
         }
