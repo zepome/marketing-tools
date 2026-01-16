@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティングポータル (用語強化版)</title>
+    <title>ひろ兄ぃ専用 マーケティングポータル (視認性最適化版)</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -56,24 +56,34 @@
             top: -14px;
         }
 
-        /* 用語集 */
-        .legend-wrapper {
-            display: flex;
-            justify-content: flex-end;
+        /* ★修正★ 用語集のグリッドレイアウト化 */
+        .legend-container {
+            display: grid;
+            /* 1列目:用語(自動幅) / 2列目:中黒(自動幅) / 3列目:説明(残り全部) */
+            grid-template-columns: max-content max-content 1fr; 
+            gap: 5px 15px; /* 縦の間隔 5px, 横の間隔 15px */
             margin-bottom: 30px;
-        }
-        .legend-list {
-            text-align: left;
             font-size: 12px;
             color: var(--legend-text);
             line-height: 1.6;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: inline-block;
+            justify-content: end; /* 全体を右寄りに配置したい場合 */
         }
-        .legend-list li {
-            white-space: nowrap;
+        /* コンテナ自体を右寄せにするためのラッパー */
+        .legend-wrapper {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .legend-term {
+            text-align: left;
+            white-space: nowrap; /* 折り返し禁止 */
+        }
+        .legend-sep {
+            text-align: center;
+            color: #9ca3af; /* 少し薄くする */
+        }
+        .legend-desc {
+            text-align: left;
         }
         
         /* 入力グリッド共通 */
@@ -128,8 +138,16 @@
             .data-row { flex-direction: column; align-items: flex-start; gap: 5px; }
             .label, .formula-center, .value { width: 100%; text-align: right; }
             .label { text-align: left; }
-            .legend-wrapper { justify-content: flex-start; }
-            .legend-list li { white-space: normal; }
+            
+            /* スマホ時は用語集を縦積みに変更 */
+            .legend-wrapper { display: block; }
+            .legend-container { 
+                grid-template-columns: 1fr; /* 1列にする */
+                gap: 5px; 
+            }
+            .legend-sep { display: none; } /* スマホでは中黒を消す */
+            .legend-term { font-weight: bold; margin-top: 10px; color: var(--primary); }
+            .legend-desc { margin-left: 10px; }
         }
     </style>
 </head>
@@ -139,14 +157,31 @@
     <h1>📊 ひろ兄ぃ専用 マーケティングポータル</h1>
     
     <div class="legend-wrapper">
-        <ul class="legend-list">
-            <li>Imp（Impressions）・・・表示回数。広告がユーザーの画面に表示された回数。</li>
-            <li>CTR（Click Through Rate）・・・広告が表示されたうち、何回クリックされたかの割合。</li>
-            <li>CPC（Cost Per Click）・・・クリック単価。広告が1回クリックされるのにかかった費用。</li>
-            <li>CVR（Conversion Rate）・・・顧客転換率。サイトに来た人のうち、何人がCVしたか。</li>
-            <li>CPA（Cost Per Acquisition）・・・顧客獲得単価。1件のCVを獲得にかかった広告費用。</li>
-            <li>CPM（Cost Per Mille）・・・インプレッション単価。広告が1,000回表示されるのにかかった費用。</li>
-        </ul>
+        <div class="legend-container">
+            <div class="legend-term">Imp (Impressions)</div>
+            <div class="legend-sep">・・・</div>
+            <div class="legend-desc">表示回数。広告がユーザーの画面に表示された回数。</div>
+            
+            <div class="legend-term">CTR (Click Through Rate)</div>
+            <div class="legend-sep">・・・</div>
+            <div class="legend-desc">広告が表示されたうち、何回クリックされたかの割合。</div>
+            
+            <div class="legend-term">CPC (Cost Per Click)</div>
+            <div class="legend-sep">・・・</div>
+            <div class="legend-desc">クリック単価。広告が1回クリックされるのにかかった費用。</div>
+            
+            <div class="legend-term">CVR (Conversion Rate)</div>
+            <div class="legend-sep">・・・</div>
+            <div class="legend-desc">顧客転換率。サイトに来た人のうち、何人がCVしたか。</div>
+            
+            <div class="legend-term">CPA (Cost Per Acquisition)</div>
+            <div class="legend-sep">・・・</div>
+            <div class="legend-desc">顧客獲得単価。1件のCVを獲得にかかった広告費用。</div>
+            
+            <div class="legend-term">CPM (Cost Per Mille)</div>
+            <div class="legend-sep">・・・</div>
+            <div class="legend-desc">インプレッション単価。広告が1,000回表示されるのにかかった費用。</div>
+        </div>
     </div>
 
     <div class="input-grid">
