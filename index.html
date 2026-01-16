@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティング計算ポータル (C完全整列版)</title>
+    <title>ひろ兄ぃ専用 マーケティングポータル (試験対策強化版)</title>
     <style>
         :root {
-            --bg-color: #f0f2f5;   /* 外側の背景 */
-            --card-bg: #ffffef;    /* 計算機本体（クリーム色） */
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffef;
             --primary: #4f46e5;
-            --danger: #ef4444;     /* 赤色 */
+            --danger: #ef4444;
             --success: #10b981;
-            --text: #1f2937;       /* 黒 */
-            --sub-text: #555555;   /* 計算式用：濃いグレー */
-            --legend-text: #6b7280; /* 用語集用：グレー */
+            --text: #1f2937;
+            --sub-text: #555555;
+            --legend-text: #6b7280;
             --border: #e5e7eb;
+            --win-bg: #dcfce7;
+            --lose-bg: #fee2e2;
         }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -35,203 +37,131 @@
         }
         
         h1 { text-align: center; color: var(--primary); margin: 0 0 10px 0; font-size: 24px; }
-
-        /* ★修正★ 用語集エリアの完全整列 */
-        .legend-wrapper {
-            display: flex;
-            justify-content: flex-end; /* 右側に寄せる */
-            margin-bottom: 30px;
-        }
-        .legend-list {
-            text-align: left; /* 中身は左揃え（これでCが縦に揃う！） */
-            font-size: 12px;
-            color: var(--legend-text);
-            line-height: 1.6;
-            list-style: none; /* ・などのマークは消す */
-            padding: 0;
-            margin: 0;
-            display: inline-block; /* 中身に合わせて箱のサイズを決める */
-        }
-        .legend-list li {
-            white-space: nowrap; /* 勝手に改行させない */
-        }
         
-        /* 入力グリッド */
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin-bottom: 35px;
+        /* セクション区切り */
+        .section-divider {
+            margin: 40px 0 20px 0;
+            border-top: 3px dashed #cbd5e1;
+            position: relative;
+            text-align: center;
         }
+        .section-badge {
+            background: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            position: relative;
+            top: -14px;
+        }
+
+        /* 用語集 */
+        .legend-wrapper { display: flex; justify-content: flex-end; margin-bottom: 30px; }
+        .legend-list { text-align: left; font-size: 12px; color: var(--legend-text); list-style: none; padding: 0; margin: 0; }
+        .legend-list li { white-space: nowrap; line-height: 1.6; }
+        
+        /* 入力グリッド共通 */
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 35px; }
         .full-width { grid-column: 1 / -1; }
         
-        /* 項目名のフォント設定 */
-        .input-group label { 
-            display: block; 
-            font-weight: 800; /* 極太 */
-            margin-bottom: 10px; 
-            font-size: 20px; 
-            color: var(--text);
-            letter-spacing: 0.5px;
-        }
-        
+        .input-group label { display: block; font-weight: 800; margin-bottom: 10px; font-size: 18px; color: var(--text); }
         .input-group input {
-            width: 100%; padding: 14px; border: 2px solid #d1d5db; 
-            border-radius: 10px;
-            font-size: 20px; 
-            font-weight: bold;
-            background-color: #ffffff; 
+            width: 100%; padding: 14px; border: 2px solid #d1d5db; border-radius: 10px;
+            font-size: 18px; font-weight: bold; background-color: #ffffff;
             box-sizing: border-box; transition: 0.2s; outline: none;
         }
-        .input-group input:focus { border-color: var(--primary); background-color: #ffffff; }
+        .input-group input:focus { border-color: var(--primary); }
 
-        /* 結果セクション */
+        /* 結果エリア共通 */
         .result-section {
-            background: #ffffff; 
-            border: 2px solid var(--border); 
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
+            background: #ffffff; border: 2px solid var(--border); border-radius: 12px;
+            padding: 25px; margin-bottom: 25px;
         }
-        
-        /* タイトル設定 */
         .result-title {
-            font-weight: 900;       /* 超極太 */
-            font-size: 22px;        
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--border); 
-            padding-bottom: 10px; 
-            color: #000000;         
-            letter-spacing: 0.5px;
+            font-weight: 900; font-size: 20px; margin-bottom: 15px;
+            border-bottom: 2px solid var(--border); padding-bottom: 10px;
         }
 
         /* ステータスバッジ */
         .status-box {
             padding: 12px; border-radius: 8px; color: white; font-weight: bold;
             text-align: center; margin-bottom: 20px; font-size: 16px;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
         }
-        .reason-text {
-            font-size: 15px; font-weight: normal; opacity: 0.95;
-            background: rgba(0,0,0,0.25); padding: 3px 10px; border-radius: 4px;
-        }
+        .reason-text { font-size: 14px; font-weight: normal; opacity: 0.95; margin-left: 10px; }
         
-        /* データ行のデザイン */
-        .data-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px dashed var(--border);
-        }
+        /* データ行 */
+        .data-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--border); }
         .data-row:last-child { border-bottom: none; }
-
-        /* 左：項目名 */
-        .label { 
-            font-weight: bold; font-size: 16px; color: var(--text); 
-            width: 20%; 
-            white-space: nowrap;
-        }
+        .label { font-weight: bold; font-size: 16px; width: 30%; }
+        .formula-center { flex-grow: 1; text-align: center; font-size: 18px; color: var(--sub-text); font-weight: bold;}
+        .value { font-weight: bold; font-size: 20px; width: 30%; text-align: right; }
         
-        /* 中：計算式 */
-        .formula-center { 
-            flex-grow: 1; 
-            text-align: center; 
-            font-size: 20px;        
-            font-weight: bold;      
-            color: var(--sub-text); 
-            letter-spacing: 0.5px;
-        }
-        
-        /* 右：数値 */
-        .value { 
-            font-weight: bold; font-size: 20px; color: var(--text); 
-            width: 25%; 
-            text-align: right;
-            white-space: nowrap;
-        }
-        
-        /* 赤字用のクラス */
-        .text-danger {
-            color: var(--danger) !important;
-        }
+        /* A/Bテスト用のスタイル */
+        .ab-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .ab-card { padding: 15px; border-radius: 10px; border: 2px solid #ddd; background: #fff; transition: 0.3s; }
+        .ab-card.winner { border-color: var(--success); background-color: var(--win-bg); transform: scale(1.02); }
+        .ab-card.loser { opacity: 0.7; background-color: var(--bg-color); }
+        .ab-title { text-align: center; font-weight: bold; margin-bottom: 10px; font-size: 18px; }
+        .ab-result-row { display: flex; justify-content: space-between; margin-top: 10px; font-size: 14px; }
+        .ab-val { font-weight: bold; font-size: 16px; }
+        .better { color: var(--success); font-weight: 900; text-decoration: underline; }
 
         @media (max-width: 600px) {
-            .input-grid { grid-template-columns: 1fr; }
+            .input-grid, .ab-container { grid-template-columns: 1fr; }
             .data-row { flex-direction: column; align-items: flex-start; gap: 5px; }
             .label, .formula-center, .value { width: 100%; text-align: right; }
             .label { text-align: left; }
-            .formula-center { text-align: right; font-size: 16px; color: var(--sub-text); }
             .legend-wrapper { justify-content: flex-start; }
-            .legend-list li { white-space: normal; } /* スマホでは折り返し許可 */
+            .legend-list li { white-space: normal; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>📊 ひろ兄ぃ専用 マーケティング計算機</h1>
+    <h1>📊 ひろ兄ぃ専用 マーケティングポータル</h1>
     
     <div class="legend-wrapper">
         <ul class="legend-list">
-            <li>CTR（Click Through Rate）・・・広告が表示されたうち、何回クリックされたかの割合。</li>
-            <li>CPC（Cost Per Click）・・・クリック単価。広告が1回クリックされるのにかかった費用。</li>
-            <li>CVR（Conversion Rate）・・・顧客転換率。サイトに来た人のうち、何人がCVしたか。</li>
+            <li>CTR：クリック率 / CPC：クリック単価 / CVR：転換率</li>
+            <li>CPA（Cost Per Acquisition / Cost Per Action）・・・顧客獲得単価。1件のCVを獲得にかかった広告費用。</li>
+            <li>ROAS：広告費の回収率 / ROI：投資利益率</li>
         </ul>
     </div>
+
+    <div class="section-divider"><span class="section-badge">PLANNING</span></div>
+    <div class="result-title">① 予算シミュレーション (1/3ルール)</div>
 
     <div class="input-grid">
         <div class="input-group full-width">
             <label>💰 月額予算 (円)</label>
-            <input type="number" id="budget" placeholder="例: 24000" oninput="calc()">
+            <input type="number" id="budget" placeholder="例: 24000" oninput="calcSim()">
         </div>
         <div class="input-group">
             <label>🎯 目標CV数 (件)</label>
-            <input type="number" id="targetCv" placeholder="例: 2" oninput="calc()">
+            <input type="number" id="targetCv" placeholder="例: 2" oninput="calcSim()">
         </div>
         <div class="input-group">
             <label>🤝 想定CVR (%)</label>
-            <input type="number" id="cvr" placeholder="例: 1.0" step="0.1" oninput="calc()">
+            <input type="number" id="cvr" placeholder="例: 1.0" step="0.1" oninput="calcSim()">
         </div>
         <div class="input-group">
             <label>👀 想定CTR (%)</label>
-            <input type="number" id="ctr" placeholder="例: 4.0" step="0.1" oninput="calc()">
+            <input type="number" id="ctr" placeholder="例: 4.0" step="0.1" oninput="calcSim()">
         </div>
         <div class="input-group">
             <label>👆 推定CPC (円)</label>
-            <input type="number" id="cpc" placeholder="例: 200" oninput="calc()">
+            <input type="number" id="cpc" placeholder="例: 200" oninput="calcSim()">
         </div>
     </div>
 
     <div class="result-section">
-        <div class="result-title">① 予算とCPCの安全性 (1/3ルール)</div>
-        <div id="status1" class="status-box" style="background:#ccc;">数値を入力してね♡</div>
-        
+        <div id="statusSim" class="status-box" style="background:#ccc;">数値を入力してね♡</div>
         <div class="data-row">
-            <span class="label">日予算</span>
-            <span class="formula-center" id="dailyBudgetFormula"></span>
-            <span class="value" id="dailyBudget">- 円</span>
-        </div>
-        <div class="data-row">
-            <span class="label">許容CPC上限</span>
+            <span class="label">CPC安全性</span>
             <span class="formula-center" id="safeCpcFormula"></span>
-            <span class="value" id="safeCpc">- 円</span>
-        </div>
-    </div>
-
-    <div class="result-section">
-        <div class="result-title">② ゴールからの逆算シミュレーション</div>
-        <div id="status2" class="status-box" style="background:#ccc;">計算待ち...</div>
-
-        <div class="data-row">
-            <span class="label">必要クリック数</span>
-            <span class="formula-center" id="reqClicksFormula"></span>
-            <span class="value" id="reqClicks">- 回</span>
-        </div>
-        <div class="data-row">
-            <span class="label">必要Imp数</span>
-            <span class="formula-center" id="reqImpFormula"></span>
-            <span class="value" id="reqImp">- 回</span>
+            <span class="value" id="safeCpcResult">-</span>
         </div>
         <div class="data-row">
             <span class="label">推定コスト</span>
@@ -244,105 +174,283 @@
             <span class="value" id="budgetDiff">- 円</span>
         </div>
     </div>
+
+    <div class="section-divider"><span class="section-badge">EXAM SOLVER</span></div>
+    <div class="result-title">② 試験対策：一問一答計算機</div>
+    
+    <div style="margin-bottom: 20px; font-size:14px; color:#555;">
+        ※問題文にある不要な数字（インプレッションシェアや新規ユーザー数など）は無視して、必要な項目だけ入力してください。
+    </div>
+
+    <div class="input-grid">
+        <div style="background:#f9fafb; padding:15px; border-radius:10px; border:1px solid #e5e7eb;">
+            <div style="font-weight:bold; margin-bottom:10px; text-align:center; color:var(--primary);">【設問7】CPAの計算</div>
+            <div class="input-group" style="margin-bottom:10px;">
+                <label style="font-size:14px;">広告費 (Cost)</label>
+                <input type="number" id="exam_cpa_cost" placeholder="例: 100000" oninput="calcExamCpa()">
+            </div>
+            <div class="input-group" style="margin-bottom:10px;">
+                <label style="font-size:14px;">CV数 (Conversion)</label>
+                <input type="number" id="exam_cpa_cv" placeholder="例: 20" oninput="calcExamCpa()">
+            </div>
+            <div style="text-align:center; font-weight:bold; font-size:18px; color:var(--text); margin-top:15px; border-top:1px dashed #ccc; padding-top:10px;">
+                CPA: <span id="exam_cpa_result" style="font-size:24px; color:var(--primary);">-</span> 円
+            </div>
+        </div>
+
+        <div style="background:#f9fafb; padding:15px; border-radius:10px; border:1px solid #e5e7eb;">
+            <div style="font-weight:bold; margin-bottom:10px; text-align:center; color:var(--primary);">【設問9】直帰率の計算</div>
+            <div class="input-group" style="margin-bottom:10px;">
+                <label style="font-size:14px;">直帰数 (Bounces)</label>
+                <input type="number" id="exam_bounce_count" placeholder="例: 5200" oninput="calcExamBounce()">
+            </div>
+            <div class="input-group" style="margin-bottom:10px;">
+                <label style="font-size:14px;">セッション (Sessions)</label>
+                <input type="number" id="exam_session_count" placeholder="例: 8908" oninput="calcExamBounce()">
+            </div>
+            <div style="text-align:center; font-weight:bold; font-size:18px; color:var(--text); margin-top:15px; border-top:1px dashed #ccc; padding-top:10px;">
+                直帰率: <span id="exam_bounce_result" style="font-size:24px; color:var(--primary);">-</span> %
+            </div>
+        </div>
+    </div>
+
+
+    <div class="section-divider"><span class="section-badge">ANALYSIS</span></div>
+    <div class="result-title">③ 収益性分析 (ROAS / ROI)</div>
+
+    <div class="input-grid">
+        <div class="input-group">
+            <label>💸 広告費用 (Cost)</label>
+            <input type="number" id="roas_cost" placeholder="円" oninput="calcRoas()">
+        </div>
+        <div class="input-group">
+            <label>💴 売上金額 (Sales)</label>
+            <input type="number" id="roas_sales" placeholder="円" oninput="calcRoas()">
+        </div>
+        <div class="input-group full-width">
+            <label>💎 利益金額 (Profit) <span style="font-size:12px; font-weight:normal;">※任意</span></label>
+            <input type="number" id="roas_profit" placeholder="粗利を入力するとROIが出ます" oninput="calcRoas()">
+        </div>
+    </div>
+
+    <div class="result-section">
+        <div class="data-row">
+            <span class="label">ROAS (売上/コスト)</span>
+            <span class="formula-center" id="roasFormula"></span>
+            <span class="value" id="roasResult">- %</span>
+        </div>
+        <div class="data-row">
+            <span class="label">ROI (利益率)</span>
+            <span class="formula-center" id="roiFormula"></span>
+            <span class="value" id="roiResult">- %</span>
+        </div>
+    </div>
+
+    <div class="section-divider"><span class="section-badge">OPTIMIZATION</span></div>
+    <div class="result-title">④ A/Bテスト ジャッジマン</div>
+
+    <div class="ab-container">
+        <div class="ab-card" id="cardA">
+            <div class="ab-title">パターン A</div>
+            <div style="margin-bottom:10px;">
+                <input type="number" id="ab_imp_a" placeholder="Imp" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_click_a" placeholder="Click" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_cv_a" placeholder="CV" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_cost_a" placeholder="Cost" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+            </div>
+            <hr>
+            <div class="ab-result-row"><span>CTR:</span> <span class="ab-val" id="res_ctr_a">- %</span></div>
+            <div class="ab-result-row"><span>CVR:</span> <span class="ab-val" id="res_cvr_a">- %</span></div>
+            <div class="ab-result-row"><span>CPA:</span> <span class="ab-val" id="res_cpa_a">- 円</span></div>
+        </div>
+
+        <div class="ab-card" id="cardB">
+            <div class="ab-title">パターン B</div>
+            <div style="margin-bottom:10px;">
+                <input type="number" id="ab_imp_b" placeholder="Imp" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_click_b" placeholder="Click" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_cv_b" placeholder="CV" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_cost_b" placeholder="Cost" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+            </div>
+            <hr>
+            <div class="ab-result-row"><span>CTR:</span> <span class="ab-val" id="res_ctr_b">- %</span></div>
+            <div class="ab-result-row"><span>CVR:</span> <span class="ab-val" id="res_cvr_b">- %</span></div>
+            <div class="ab-result-row"><span>CPA:</span> <span class="ab-val" id="res_cpa_b">- 円</span></div>
+        </div>
+    </div>
 </div>
 
 <script>
-function calc() {
+// ■■■ 1. 予算シミュレーション計算 ■■■
+function calcSim() {
     const budget = parseFloat(document.getElementById('budget').value) || 0;
     const targetCv = parseFloat(document.getElementById('targetCv').value) || 0;
     const cpc = parseFloat(document.getElementById('cpc').value) || 0;
     const ctr = parseFloat(document.getElementById('ctr').value) || 0;
     const cvr = parseFloat(document.getElementById('cvr').value) || 0;
 
-    // --- ① 1/3ルール判定 ---
     const daily = Math.floor(budget / 30);
     const safeMax = Math.floor(daily / 3);
     
-    document.getElementById('dailyBudget').innerText = daily.toLocaleString() + " 円";
-    document.getElementById('safeCpc').innerText = safeMax.toLocaleString() + " 円";
-
-    if(budget > 0) {
-        document.getElementById('dailyBudgetFormula').innerText = `${budget.toLocaleString()} ÷ 30`;
-        document.getElementById('safeCpcFormula').innerText = `${daily.toLocaleString()} ÷ 3`;
-    } else {
-        document.getElementById('dailyBudgetFormula').innerText = "";
-        document.getElementById('safeCpcFormula').innerText = "";
-    }
-
-    const status1 = document.getElementById('status1');
-    if (budget > 0 && cpc > 0) {
+    // 安全性判定
+    const statusSim = document.getElementById('statusSim');
+    const safeCpcRes = document.getElementById('safeCpcResult');
+    
+    if(budget > 0 && cpc > 0) {
+        document.getElementById('safeCpcFormula').innerText = `許容上限: ${safeMax.toLocaleString()}円`;
         if (cpc <= safeMax) {
-            status1.style.background = "#10b981"; 
-            status1.innerHTML = `✅ 安全圏 <span class="reason-text">(${cpc}円 ≤ ${safeMax}円)</span>`;
+            safeCpcRes.innerHTML = "<span style='color:var(--success)'>OK</span>";
         } else {
-            status1.style.background = "#ef4444"; 
-            status1.innerHTML = `❌ 危険！CPC高すぎ <span class="reason-text">(${cpc}円 > ${safeMax}円)</span>`;
+            safeCpcRes.innerHTML = "<span style='color:var(--danger)'>高すぎ</span>";
         }
     } else {
-        status1.style.background = "#ccc";
-        status1.innerHTML = "数値を入力してね♡";
+        document.getElementById('safeCpcFormula').innerText = "";
+        safeCpcRes.innerText = "-";
     }
 
-    // --- ② 逆算シミュレーション ---
-    let reqClicks = 0;
-    let reqImp = 0;
-    let estCost = 0;
-
+    // 逆算
+    let reqClicks = 0, estCost = 0;
     if (targetCv > 0 && cvr > 0) {
         reqClicks = Math.ceil(targetCv / (cvr / 100));
-        document.getElementById('reqClicksFormula').innerText = `${targetCv} ÷ ${cvr}%`;
-    } else {
-        document.getElementById('reqClicksFormula').innerText = "";
     }
 
-    if (reqClicks > 0 && ctr > 0) {
-        reqImp = Math.ceil(reqClicks / (ctr / 100));
-        document.getElementById('reqImpFormula').innerText = `${reqClicks.toLocaleString()} ÷ ${ctr}%`;
-    } else {
-        document.getElementById('reqImpFormula').innerText = "";
-    }
-
-    estCost = reqClicks * cpc;
-    if (estCost > 0) {
-        document.getElementById('estCostFormula').innerText = `${reqClicks.toLocaleString()} × ${cpc.toLocaleString()}`;
+    if (reqClicks > 0 && cpc > 0) {
+        estCost = reqClicks * cpc;
+        document.getElementById('estCostFormula').innerText = `${reqClicks.toLocaleString()} × ${cpc}円`;
+        document.getElementById('estCost').innerText = estCost.toLocaleString() + " 円";
     } else {
         document.getElementById('estCostFormula').innerText = "";
+        document.getElementById('estCost').innerText = "-";
     }
 
-    document.getElementById('reqClicks').innerText = reqClicks.toLocaleString() + " 回";
-    document.getElementById('reqImp').innerText = reqImp.toLocaleString() + " 回";
-    document.getElementById('estCost').innerText = estCost.toLocaleString() + " 円";
-
+    // 予算残高
     const diff = budget - estCost;
-    const sign = diff >= 0 ? "+" : "";
     const budgetDiffElem = document.getElementById('budgetDiff');
-    
-    budgetDiffElem.innerText = sign + diff.toLocaleString() + " 円";
-    
-    if (diff < 0) {
-        budgetDiffElem.style.color = "#ef4444"; 
-    } else {
-        budgetDiffElem.style.color = ""; 
-    }
-    
     if (budget > 0 && estCost > 0) {
         document.getElementById('budgetDiffFormula').innerText = `${budget.toLocaleString()} - ${estCost.toLocaleString()}`;
-    } else {
-        document.getElementById('budgetDiffFormula').innerText = "";
-    }
+        budgetDiffElem.innerText = (diff >= 0 ? "+" : "") + diff.toLocaleString() + " 円";
+        budgetDiffElem.style.color = diff < 0 ? "var(--danger)" : "inherit";
 
-    const status2 = document.getElementById('status2');
-    if (budget > 0 && estCost > 0) {
-        if (estCost <= budget) {
-            status2.style.background = "#10b981"; 
-            status2.innerHTML = `✅ 予算内で達成可能 <span class="reason-text">(余り ${diff.toLocaleString()}円)</span>`;
+        if (diff >= 0) {
+            statusSim.style.background = "var(--success)";
+            statusSim.innerHTML = `✅ 達成可能 <span class="reason-text">(余り${diff.toLocaleString()}円)</span>`;
         } else {
-            status2.style.background = "#ef4444"; 
-            status2.innerHTML = `❌ 予算オーバー <span class="reason-text">(${estCost.toLocaleString()} > ${budget.toLocaleString()})</span>`;
+            statusSim.style.background = "var(--danger)";
+            statusSim.innerHTML = `❌ 予算不足 <span class="reason-text">(${Math.abs(diff).toLocaleString()}円不足)</span>`;
         }
     } else {
-        status2.style.background = "#ccc";
-        status2.innerHTML = "計算待ち...";
+        statusSim.style.background = "#ccc";
+        statusSim.innerHTML = "数値を入力してね♡";
+        document.getElementById('budgetDiffFormula').innerText = "";
+        budgetDiffElem.innerText = "-";
+    }
+}
+
+// ■■■ 2. 試験対策 (一問一答) ■■■
+function calcExamCpa() {
+    // CPA = Cost / CV
+    const cost = parseFloat(document.getElementById('exam_cpa_cost').value) || 0;
+    const cv = parseFloat(document.getElementById('exam_cpa_cv').value) || 0;
+    const resultElem = document.getElementById('exam_cpa_result');
+
+    if(cost > 0 && cv > 0) {
+        const cpa = Math.round(cost / cv); // 四捨五入
+        resultElem.innerText = cpa.toLocaleString();
+    } else {
+        resultElem.innerText = "-";
+    }
+}
+
+function calcExamBounce() {
+    // 直帰率 = 直帰数 / セッション数
+    const bounces = parseFloat(document.getElementById('exam_bounce_count').value) || 0;
+    const sessions = parseFloat(document.getElementById('exam_session_count').value) || 0;
+    const resultElem = document.getElementById('exam_bounce_result');
+
+    if(bounces > 0 && sessions > 0) {
+        const rate = (bounces / sessions) * 100;
+        resultElem.innerText = rate.toFixed(2); // 小数点2桁まで
+    } else {
+        resultElem.innerText = "-";
+    }
+}
+
+// ■■■ 3. ROAS / ROI 計算 ■■■
+function calcRoas() {
+    const cost = parseFloat(document.getElementById('roas_cost').value) || 0;
+    const sales = parseFloat(document.getElementById('roas_sales').value) || 0;
+    const profit = document.getElementById('roas_profit').value; 
+
+    if(cost > 0 && sales > 0) {
+        const roas = (sales / cost) * 100;
+        document.getElementById('roasFormula').innerText = `${sales.toLocaleString()} ÷ ${cost.toLocaleString()}`;
+        document.getElementById('roasResult').innerText = roas.toFixed(1) + " %";
+    } else {
+        document.getElementById('roasFormula').innerText = "";
+        document.getElementById('roasResult').innerText = "- %";
+    }
+
+    const profitVal = (profit === "") ? (sales - cost) : parseFloat(profit);
+    let grossProfit = (profit === "") ? sales : parseFloat(profit);
+    
+    if(cost > 0 && (sales > 0 || profit !== "")) {
+        let roiVal = ((grossProfit - cost) / cost) * 100;
+        document.getElementById('roiFormula').innerText = `(${grossProfit.toLocaleString()} - ${cost.toLocaleString()}) ÷ ${cost.toLocaleString()}`;
+        document.getElementById('roiResult').innerText = roiVal.toFixed(1) + " %";
+        document.getElementById('roiResult').style.color = roiVal > 0 ? "var(--success)" : "var(--danger)";
+    } else {
+        document.getElementById('roiFormula').innerText = "";
+        document.getElementById('roiResult').innerText = "- %";
+    }
+}
+
+// ■■■ 4. A/Bテスト判定 ■■■
+function calcAb() {
+    function getVals(suffix) {
+        return {
+            imp: parseFloat(document.getElementById('ab_imp_' + suffix).value) || 0,
+            click: parseFloat(document.getElementById('ab_click_' + suffix).value) || 0,
+            cv: parseFloat(document.getElementById('ab_cv_' + suffix).value) || 0,
+            cost: parseFloat(document.getElementById('ab_cost_' + suffix).value) || 0
+        };
+    }
+    const a = getVals('a');
+    const b = getVals('b');
+
+    function calcMetrics(d) {
+        const ctr = d.imp > 0 ? (d.click / d.imp) * 100 : 0;
+        const cvr = d.click > 0 ? (d.cv / d.click) * 100 : 0;
+        const cpa = d.cv > 0 ? d.cost / d.cv : 0;
+        return { ctr, cvr, cpa };
+    }
+    const resA = calcMetrics(a);
+    const resB = calcMetrics(b);
+
+    document.getElementById('res_ctr_a').innerText = resA.ctr.toFixed(2) + " %";
+    document.getElementById('res_cvr_a').innerText = resA.cvr.toFixed(2) + " %";
+    document.getElementById('res_cpa_a').innerText = Math.round(resA.cpa).toLocaleString() + " 円";
+    
+    document.getElementById('res_ctr_b').innerText = resB.ctr.toFixed(2) + " %";
+    document.getElementById('res_cvr_b').innerText = resB.cvr.toFixed(2) + " %";
+    document.getElementById('res_cpa_b').innerText = Math.round(resB.cpa).toLocaleString() + " 円";
+
+    const cardA = document.getElementById('cardA');
+    const cardB = document.getElementById('cardB');
+    cardA.className = "ab-card";
+    cardB.className = "ab-card";
+
+    if (a.cv > 0 && b.cv > 0) {
+        if (resA.cpa < resB.cpa) {
+            cardA.classList.add('winner');
+            cardB.classList.add('loser');
+            document.getElementById('res_cpa_a').classList.add('better');
+            document.getElementById('res_cpa_b').classList.remove('better');
+        } else if (resB.cpa < resA.cpa) {
+            cardB.classList.add('winner');
+            cardA.classList.add('loser');
+            document.getElementById('res_cpa_b').classList.add('better');
+            document.getElementById('res_cpa_a').classList.remove('better');
+        }
     }
 }
 </script>
