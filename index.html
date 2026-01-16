@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティングポータル (試験対策強化版)</title>
+    <title>ひろ兄ぃ専用 マーケティングポータル (完全復旧版)</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -56,10 +56,25 @@
             top: -14px;
         }
 
-        /* 用語集 */
-        .legend-wrapper { display: flex; justify-content: flex-end; margin-bottom: 30px; }
-        .legend-list { text-align: left; font-size: 12px; color: var(--legend-text); list-style: none; padding: 0; margin: 0; }
-        .legend-list li { white-space: nowrap; line-height: 1.6; }
+        /* 用語集 (修正：左揃えで改行なしのリスト形式に戻しました) */
+        .legend-wrapper {
+            display: flex;
+            justify-content: flex-end; /* 右寄せ */
+            margin-bottom: 30px;
+        }
+        .legend-list {
+            text-align: left;
+            font-size: 12px;
+            color: var(--legend-text);
+            line-height: 1.6;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: inline-block;
+        }
+        .legend-list li {
+            white-space: nowrap; /* 改行させない */
+        }
         
         /* 入力グリッド共通 */
         .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 35px; }
@@ -87,8 +102,9 @@
         .status-box {
             padding: 12px; border-radius: 8px; color: white; font-weight: bold;
             text-align: center; margin-bottom: 20px; font-size: 16px;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
         }
-        .reason-text { font-size: 14px; font-weight: normal; opacity: 0.95; margin-left: 10px; }
+        .reason-text { font-size: 14px; font-weight: normal; opacity: 0.95; background: rgba(0,0,0,0.25); padding: 3px 10px; border-radius: 4px; }
         
         /* データ行 */
         .data-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--border); }
@@ -124,14 +140,12 @@
     
     <div class="legend-wrapper">
         <ul class="legend-list">
-            <li>CTR：クリック率 / CPC：クリック単価 / CVR：転換率</li>
+            <li>CTR（Click Through Rate）・・・広告が表示されたうち、何回クリックされたかの割合。</li>
+            <li>CPC（Cost Per Click）・・・クリック単価。広告が1回クリックされるのにかかった費用。</li>
+            <li>CVR（Conversion Rate）・・・顧客転換率。サイトに来た人のうち、何人がCVしたか。</li>
             <li>CPA（Cost Per Acquisition / Cost Per Action）・・・顧客獲得単価。1件のCVを獲得にかかった広告費用。</li>
-            <li>ROAS：広告費の回収率 / ROI：投資利益率</li>
         </ul>
     </div>
-
-    <div class="section-divider"><span class="section-badge">PLANNING</span></div>
-    <div class="result-title">① 予算シミュレーション (1/3ルール)</div>
 
     <div class="input-grid">
         <div class="input-group full-width">
@@ -157,11 +171,34 @@
     </div>
 
     <div class="result-section">
-        <div id="statusSim" class="status-box" style="background:#ccc;">数値を入力してね♡</div>
+        <div class="result-title">① 予算とCPCの安全性 (1/3ルール)</div>
+        <div id="status1" class="status-box" style="background:#ccc;">数値を入力してね♡</div>
+        
         <div class="data-row">
-            <span class="label">CPC安全性</span>
+            <span class="label">日予算</span>
+            <span class="formula-center" id="dailyBudgetFormula"></span>
+            <span class="value" id="dailyBudget">- 円</span>
+        </div>
+        <div class="data-row">
+            <span class="label">許容CPC上限</span>
             <span class="formula-center" id="safeCpcFormula"></span>
-            <span class="value" id="safeCpcResult">-</span>
+            <span class="value" id="safeCpc">- 円</span>
+        </div>
+    </div>
+
+    <div class="result-section">
+        <div class="result-title">② ゴールからの逆算シミュレーション</div>
+        <div id="status2" class="status-box" style="background:#ccc;">計算待ち...</div>
+
+        <div class="data-row">
+            <span class="label">必要クリック数</span>
+            <span class="formula-center" id="reqClicksFormula"></span>
+            <span class="value" id="reqClicks">- 回</span>
+        </div>
+        <div class="data-row">
+            <span class="label">必要Imp数</span>
+            <span class="formula-center" id="reqImpFormula"></span>
+            <span class="value" id="reqImp">- 回</span>
         </div>
         <div class="data-row">
             <span class="label">推定コスト</span>
@@ -175,8 +212,9 @@
         </div>
     </div>
 
+
     <div class="section-divider"><span class="section-badge">EXAM SOLVER</span></div>
-    <div class="result-title">② 試験対策：一問一答計算機</div>
+    <div class="result-title">CPA・直帰率</div>
     
     <div style="margin-bottom: 20px; font-size:14px; color:#555;">
         ※問題文にある不要な数字（インプレッションシェアや新規ユーザー数など）は無視して、必要な項目だけ入力してください。
@@ -184,14 +222,14 @@
 
     <div class="input-grid">
         <div style="background:#f9fafb; padding:15px; border-radius:10px; border:1px solid #e5e7eb;">
-            <div style="font-weight:bold; margin-bottom:10px; text-align:center; color:var(--primary);">【設問7】CPAの計算</div>
+            <div style="font-weight:bold; margin-bottom:10px; text-align:center; color:var(--primary);">CPAの計算</div>
             <div class="input-group" style="margin-bottom:10px;">
                 <label style="font-size:14px;">広告費 (Cost)</label>
-                <input type="number" id="exam_cpa_cost" placeholder="例: 100000" oninput="calcExamCpa()">
+                <input type="number" id="exam_cpa_cost" placeholder="100000" oninput="calcExamCpa()">
             </div>
             <div class="input-group" style="margin-bottom:10px;">
                 <label style="font-size:14px;">CV数 (Conversion)</label>
-                <input type="number" id="exam_cpa_cv" placeholder="例: 20" oninput="calcExamCpa()">
+                <input type="number" id="exam_cpa_cv" placeholder="20" oninput="calcExamCpa()">
             </div>
             <div style="text-align:center; font-weight:bold; font-size:18px; color:var(--text); margin-top:15px; border-top:1px dashed #ccc; padding-top:10px;">
                 CPA: <span id="exam_cpa_result" style="font-size:24px; color:var(--primary);">-</span> 円
@@ -199,14 +237,14 @@
         </div>
 
         <div style="background:#f9fafb; padding:15px; border-radius:10px; border:1px solid #e5e7eb;">
-            <div style="font-weight:bold; margin-bottom:10px; text-align:center; color:var(--primary);">【設問9】直帰率の計算</div>
+            <div style="font-weight:bold; margin-bottom:10px; text-align:center; color:var(--primary);">直帰率の計算</div>
             <div class="input-group" style="margin-bottom:10px;">
                 <label style="font-size:14px;">直帰数 (Bounces)</label>
-                <input type="number" id="exam_bounce_count" placeholder="例: 5200" oninput="calcExamBounce()">
+                <input type="number" id="exam_bounce_count" placeholder="5200" oninput="calcExamBounce()">
             </div>
             <div class="input-group" style="margin-bottom:10px;">
                 <label style="font-size:14px;">セッション (Sessions)</label>
-                <input type="number" id="exam_session_count" placeholder="例: 8908" oninput="calcExamBounce()">
+                <input type="number" id="exam_session_count" placeholder="8900" oninput="calcExamBounce()">
             </div>
             <div style="text-align:center; font-weight:bold; font-size:18px; color:var(--text); margin-top:15px; border-top:1px dashed #ccc; padding-top:10px;">
                 直帰率: <span id="exam_bounce_result" style="font-size:24px; color:var(--primary);">-</span> %
@@ -281,7 +319,7 @@
 </div>
 
 <script>
-// ■■■ 1. 予算シミュレーション計算 ■■■
+// ■■■ 1. 予算シミュレーション計算 (完全復元) ■■■
 function calcSim() {
     const budget = parseFloat(document.getElementById('budget').value) || 0;
     const targetCv = parseFloat(document.getElementById('targetCv').value) || 0;
@@ -289,60 +327,95 @@ function calcSim() {
     const ctr = parseFloat(document.getElementById('ctr').value) || 0;
     const cvr = parseFloat(document.getElementById('cvr').value) || 0;
 
+    // --- ① 1/3ルール判定 ---
     const daily = Math.floor(budget / 30);
     const safeMax = Math.floor(daily / 3);
     
-    // 安全性判定
-    const statusSim = document.getElementById('statusSim');
-    const safeCpcRes = document.getElementById('safeCpcResult');
-    
-    if(budget > 0 && cpc > 0) {
-        document.getElementById('safeCpcFormula').innerText = `許容上限: ${safeMax.toLocaleString()}円`;
-        if (cpc <= safeMax) {
-            safeCpcRes.innerHTML = "<span style='color:var(--success)'>OK</span>";
-        } else {
-            safeCpcRes.innerHTML = "<span style='color:var(--danger)'>高すぎ</span>";
-        }
+    document.getElementById('dailyBudget').innerText = daily.toLocaleString() + " 円";
+    document.getElementById('safeCpc').innerText = safeMax.toLocaleString() + " 円";
+
+    if(budget > 0) {
+        document.getElementById('dailyBudgetFormula').innerText = `${budget.toLocaleString()} ÷ 30`;
+        document.getElementById('safeCpcFormula').innerText = `${daily.toLocaleString()} ÷ 3`;
     } else {
+        document.getElementById('dailyBudgetFormula').innerText = "";
         document.getElementById('safeCpcFormula').innerText = "";
-        safeCpcRes.innerText = "-";
     }
 
-    // 逆算
-    let reqClicks = 0, estCost = 0;
+    const status1 = document.getElementById('status1');
+    if (budget > 0 && cpc > 0) {
+        if (cpc <= safeMax) {
+            status1.style.background = "#10b981"; 
+            status1.innerHTML = `✅ 安全圏 <span class="reason-text">(${cpc}円 ≤ ${safeMax}円)</span>`;
+        } else {
+            status1.style.background = "#ef4444"; 
+            status1.innerHTML = `❌ 危険！CPC高すぎ <span class="reason-text">(${cpc}円 > ${safeMax}円)</span>`;
+        }
+    } else {
+        status1.style.background = "#ccc";
+        status1.innerHTML = "数値を入力してね♡";
+    }
+
+    // --- ② 逆算シミュレーション ---
+    let reqClicks = 0;
+    let reqImp = 0;
+    let estCost = 0;
+
     if (targetCv > 0 && cvr > 0) {
         reqClicks = Math.ceil(targetCv / (cvr / 100));
+        document.getElementById('reqClicksFormula').innerText = `${targetCv} ÷ ${cvr}%`;
+    } else {
+        document.getElementById('reqClicksFormula').innerText = "";
     }
 
-    if (reqClicks > 0 && cpc > 0) {
-        estCost = reqClicks * cpc;
-        document.getElementById('estCostFormula').innerText = `${reqClicks.toLocaleString()} × ${cpc}円`;
-        document.getElementById('estCost').innerText = estCost.toLocaleString() + " 円";
+    if (reqClicks > 0 && ctr > 0) {
+        reqImp = Math.ceil(reqClicks / (ctr / 100));
+        document.getElementById('reqImpFormula').innerText = `${reqClicks.toLocaleString()} ÷ ${ctr}%`;
+    } else {
+        document.getElementById('reqImpFormula').innerText = "";
+    }
+
+    estCost = reqClicks * cpc;
+    if (estCost > 0) {
+        document.getElementById('estCostFormula').innerText = `${reqClicks.toLocaleString()} × ${cpc.toLocaleString()}`;
     } else {
         document.getElementById('estCostFormula').innerText = "";
-        document.getElementById('estCost').innerText = "-";
     }
 
-    // 予算残高
+    document.getElementById('reqClicks').innerText = reqClicks.toLocaleString() + " 回";
+    document.getElementById('reqImp').innerText = reqImp.toLocaleString() + " 回";
+    document.getElementById('estCost').innerText = estCost.toLocaleString() + " 円";
+
     const diff = budget - estCost;
+    const sign = diff >= 0 ? "+" : "";
     const budgetDiffElem = document.getElementById('budgetDiff');
+    
+    budgetDiffElem.innerText = sign + diff.toLocaleString() + " 円";
+    
+    if (diff < 0) {
+        budgetDiffElem.style.color = "#ef4444"; 
+    } else {
+        budgetDiffElem.style.color = ""; 
+    }
+    
     if (budget > 0 && estCost > 0) {
         document.getElementById('budgetDiffFormula').innerText = `${budget.toLocaleString()} - ${estCost.toLocaleString()}`;
-        budgetDiffElem.innerText = (diff >= 0 ? "+" : "") + diff.toLocaleString() + " 円";
-        budgetDiffElem.style.color = diff < 0 ? "var(--danger)" : "inherit";
+    } else {
+        document.getElementById('budgetDiffFormula').innerText = "";
+    }
 
-        if (diff >= 0) {
-            statusSim.style.background = "var(--success)";
-            statusSim.innerHTML = `✅ 達成可能 <span class="reason-text">(余り${diff.toLocaleString()}円)</span>`;
+    const status2 = document.getElementById('status2');
+    if (budget > 0 && estCost > 0) {
+        if (estCost <= budget) {
+            status2.style.background = "#10b981"; 
+            status2.innerHTML = `✅ 予算内で達成可能 <span class="reason-text">(余り ${diff.toLocaleString()}円)</span>`;
         } else {
-            statusSim.style.background = "var(--danger)";
-            statusSim.innerHTML = `❌ 予算不足 <span class="reason-text">(${Math.abs(diff).toLocaleString()}円不足)</span>`;
+            status2.style.background = "#ef4444"; 
+            status2.innerHTML = `❌ 予算オーバー <span class="reason-text">(${estCost.toLocaleString()} > ${budget.toLocaleString()})</span>`;
         }
     } else {
-        statusSim.style.background = "#ccc";
-        statusSim.innerHTML = "数値を入力してね♡";
-        document.getElementById('budgetDiffFormula').innerText = "";
-        budgetDiffElem.innerText = "-";
+        status2.style.background = "#ccc";
+        status2.innerHTML = "計算待ち...";
     }
 }
 
