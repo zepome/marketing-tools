@@ -19,7 +19,8 @@
             --lose-bg: #fee2e2;
         }
         
-        /* 全要素に box-sizing を適用 */
+        /* ★重要修正★ 全要素のサイズ計算を「枠線込み」に変更 */
+        /* これにより、paddingを入れても入力欄が枠からはみ出さなくなります */
         *, *::before, *::after {
             box-sizing: border-box;
         }
@@ -62,37 +63,47 @@
             top: -14px;
         }
 
-        /* ★修正★ 用語集レイアウト */
+        /* ★用語集のレイアウト設定（修正版） */
         .legend-wrapper {
             display: flex;
-            justify-content: flex-end; /* 全体を右側に寄せる */
+            justify-content: flex-end; /* 右側に配置 */
             margin-bottom: 30px;
             width: 100%;
         }
+        
         .legend-container {
             display: grid;
-            /* 1列目: 用語 (一番長い文字幅に合わせる) 
+            /* 1列目: 用語 (文字数に合わせて自動伸縮) 
                2列目: 中黒 (40px固定) 
-               3列目: 説明 (残り全部) 
+               3列目: 説明 (残りの幅すべて) 
             */
             grid-template-columns: max-content 40px 1fr; 
-            gap: 5px 0; 
+            column-gap: 5px; /* 列と列の間隔 */
+            row-gap: 5px;    /* 行と行の間隔 */
+            
             font-size: 12px;
             color: var(--legend-text);
             line-height: 1.6;
-            max-width: 100%;
+            width: 100%;          /* コンテナ幅いっぱい */
+            max-width: 100%;      /* はみ出し防止 */
         }
         
+        /* 用語（Imp, CTR...） */
         .legend-term {
-            text-align: left; /* ★ここを修正：左寄せに変更★ */
-            white-space: nowrap;
+            text-align: left !important;  /* 強制的に左寄せ */
+            justify-self: start;          /* グリッド内でも左側に寄せる */
+            white-space: nowrap;          /* 折り返し禁止 */
             font-weight: bold;
             color: var(--sub-text);
         }
+        
+        /* 中黒（・・・） */
         .legend-sep {
             text-align: center;
             color: #9ca3af;
         }
+        
+        /* 説明文 */
         .legend-desc {
             text-align: left;
         }
@@ -141,8 +152,9 @@
         .ab-card.loser { opacity: 0.7; background-color: var(--bg-color); }
         .ab-title { text-align: center; font-weight: bold; margin-bottom: 10px; font-size: 18px; }
         
+        /* A/Bテスト内の入力欄（枠内収め修正） */
         .ab-card input {
-            width: 100%; 
+            width: 100%;          /* 親要素の幅に合わせる */
             padding: 10px; 
             margin-bottom: 8px; 
             border: 1px solid #ccc; 
@@ -163,11 +175,11 @@
             /* スマホ時：用語集を縦積みに変更 */
             .legend-wrapper { justify-content: flex-start; }
             .legend-container { 
-                grid-template-columns: 1fr; 
+                grid-template-columns: 1fr; /* 1列にする */
                 gap: 5px; 
             }
             .legend-sep { display: none; }
-            .legend-term { text-align: left; font-weight: bold; margin-top: 10px; color: var(--primary); }
+            .legend-term { text-align: left !important; font-weight: bold; margin-top: 10px; color: var(--primary); }
             .legend-desc { margin-left: 10px; }
         }
     </style>
