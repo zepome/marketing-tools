@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひろ兄ぃ専用 マーケティングポータル (完全復旧版)</title>
+    <title>ひろ兄ぃ専用 マーケティングポータル (用語強化版)</title>
     <style>
         :root {
             --bg-color: #f0f2f5;
@@ -56,10 +56,10 @@
             top: -14px;
         }
 
-        /* 用語集 (修正：左揃えで改行なしのリスト形式に戻しました) */
+        /* 用語集 */
         .legend-wrapper {
             display: flex;
-            justify-content: flex-end; /* 右寄せ */
+            justify-content: flex-end;
             margin-bottom: 30px;
         }
         .legend-list {
@@ -73,7 +73,7 @@
             display: inline-block;
         }
         .legend-list li {
-            white-space: nowrap; /* 改行させない */
+            white-space: nowrap;
         }
         
         /* 入力グリッド共通 */
@@ -140,10 +140,12 @@
     
     <div class="legend-wrapper">
         <ul class="legend-list">
+            <li>Imp（Impressions）・・・表示回数。広告がユーザーの画面に表示された回数。</li>
             <li>CTR（Click Through Rate）・・・広告が表示されたうち、何回クリックされたかの割合。</li>
             <li>CPC（Cost Per Click）・・・クリック単価。広告が1回クリックされるのにかかった費用。</li>
             <li>CVR（Conversion Rate）・・・顧客転換率。サイトに来た人のうち、何人がCVしたか。</li>
-            <li>CPA（Cost Per Acquisition / Cost Per Action）・・・顧客獲得単価。1件のCVを獲得にかかった広告費用。</li>
+            <li>CPA（Cost Per Acquisition）・・・顧客獲得単価。1件のCVを獲得にかかった広告費用。</li>
+            <li>CPM（Cost Per Mille）・・・インプレッション単価。広告が1,000回表示されるのにかかった費用。</li>
         </ul>
     </div>
 
@@ -214,7 +216,7 @@
 
 
     <div class="section-divider"><span class="section-badge">EXAM SOLVER</span></div>
-    <div class="result-title">CPA・直帰率</div>
+    <div class="result-title">CPA・直帰率・CPM</div>
     
     <div style="margin-bottom: 20px; font-size:14px; color:#555;">
         ※問題文にある不要な数字（インプレッションシェアや新規ユーザー数など）は無視して、必要な項目だけ入力してください。
@@ -250,11 +252,28 @@
                 直帰率: <span id="exam_bounce_result" style="font-size:24px; color:var(--primary);">-</span> %
             </div>
         </div>
+
+        <div style="background:#f9fafb; padding:15px; border-radius:10px; border:1px solid #e5e7eb; grid-column: 1 / -1;">
+            <div style="font-weight:bold; margin-bottom:10px; text-align:center; color:var(--primary);">CPM (インプレッション単価) の計算</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div class="input-group" style="margin-bottom:0;">
+                    <label style="font-size:14px;">広告費 (Cost)</label>
+                    <input type="number" id="exam_cpm_cost" placeholder="例: 50000" oninput="calcExamCpm()">
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                    <label style="font-size:14px;">Imp数 (Impressions)</label>
+                    <input type="number" id="exam_cpm_imp" placeholder="例: 100000" oninput="calcExamCpm()">
+                </div>
+            </div>
+            <div style="text-align:center; font-weight:bold; font-size:18px; color:var(--text); margin-top:15px; border-top:1px dashed #ccc; padding-top:10px;">
+                CPM: <span id="exam_cpm_result" style="font-size:24px; color:var(--primary);">-</span> 円
+            </div>
+        </div>
     </div>
 
 
     <div class="section-divider"><span class="section-badge">ANALYSIS</span></div>
-    <div class="result-title">③ 収益性分析 (ROAS / ROI)</div>
+    <div class="result-title">③ 収益性分析 (ROAS / ROI / 限界CPA)</div>
 
     <div class="input-grid">
         <div class="input-group">
@@ -284,6 +303,26 @@
         </div>
     </div>
 
+    <div class="result-section" style="border-color:var(--primary); background:#eff6ff;">
+        <div class="result-title" style="color:var(--primary); border-color:var(--primary);">🎯 限界CPA (損益分岐点) 計算</div>
+        <div class="input-grid" style="margin-bottom:15px;">
+            <div class="input-group">
+                <label style="font-size:16px;">商品単価 (円)</label>
+                <input type="number" id="be_price" placeholder="例: 10000" oninput="calcBreakEven()">
+            </div>
+            <div class="input-group">
+                <label style="font-size:16px;">原価など (円)</label>
+                <input type="number" id="be_cost" placeholder="例: 3000" oninput="calcBreakEven()">
+            </div>
+        </div>
+        <div class="data-row">
+            <span class="label">限界CPA</span>
+            <span class="formula-center" id="beFormula" style="font-size:14px;">単価 - 原価 = 限界利益</span>
+            <span class="value" id="beResult">- 円</span>
+        </div>
+        <div style="font-size:12px; text-align:right; color:var(--sub-text);">※これ以上のCPAになると赤字になります</div>
+    </div>
+
     <div class="section-divider"><span class="section-badge">OPTIMIZATION</span></div>
     <div class="result-title">④ A/Bテスト ジャッジマン</div>
 
@@ -291,10 +330,10 @@
         <div class="ab-card" id="cardA">
             <div class="ab-title">パターン A</div>
             <div style="margin-bottom:10px;">
-                <input type="number" id="ab_imp_a" placeholder="Imp" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_click_a" placeholder="Click" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_cv_a" placeholder="CV" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_cost_a" placeholder="Cost" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_imp_a" placeholder="Imp (表示回数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_click_a" placeholder="Click (クリック数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_cv_a" placeholder="CV (獲得数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_cost_a" placeholder="Cost (費用)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
             </div>
             <hr>
             <div class="ab-result-row"><span>CTR:</span> <span class="ab-val" id="res_ctr_a">- %</span></div>
@@ -305,10 +344,10 @@
         <div class="ab-card" id="cardB">
             <div class="ab-title">パターン B</div>
             <div style="margin-bottom:10px;">
-                <input type="number" id="ab_imp_b" placeholder="Imp" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_click_b" placeholder="Click" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_cv_b" placeholder="CV" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
-                <input type="number" id="ab_cost_b" placeholder="Cost" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_imp_b" placeholder="Imp (表示回数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_click_b" placeholder="Click (クリック数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_cv_b" placeholder="CV (獲得数)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
+                <input type="number" id="ab_cost_b" placeholder="Cost (費用)" style="width:100%; margin-bottom:5px; padding:8px;" oninput="calcAb()">
             </div>
             <hr>
             <div class="ab-result-row"><span>CTR:</span> <span class="ab-val" id="res_ctr_b">- %</span></div>
@@ -319,7 +358,7 @@
 </div>
 
 <script>
-// ■■■ 1. 予算シミュレーション計算 (完全復元) ■■■
+// ■■■ 1. 予算シミュレーション計算 ■■■
 function calcSim() {
     const budget = parseFloat(document.getElementById('budget').value) || 0;
     const targetCv = parseFloat(document.getElementById('targetCv').value) || 0;
@@ -421,13 +460,12 @@ function calcSim() {
 
 // ■■■ 2. 試験対策 (一問一答) ■■■
 function calcExamCpa() {
-    // CPA = Cost / CV
     const cost = parseFloat(document.getElementById('exam_cpa_cost').value) || 0;
     const cv = parseFloat(document.getElementById('exam_cpa_cv').value) || 0;
     const resultElem = document.getElementById('exam_cpa_result');
 
     if(cost > 0 && cv > 0) {
-        const cpa = Math.round(cost / cv); // 四捨五入
+        const cpa = Math.round(cost / cv); 
         resultElem.innerText = cpa.toLocaleString();
     } else {
         resultElem.innerText = "-";
@@ -435,20 +473,32 @@ function calcExamCpa() {
 }
 
 function calcExamBounce() {
-    // 直帰率 = 直帰数 / セッション数
     const bounces = parseFloat(document.getElementById('exam_bounce_count').value) || 0;
     const sessions = parseFloat(document.getElementById('exam_session_count').value) || 0;
     const resultElem = document.getElementById('exam_bounce_result');
 
     if(bounces > 0 && sessions > 0) {
         const rate = (bounces / sessions) * 100;
-        resultElem.innerText = rate.toFixed(2); // 小数点2桁まで
+        resultElem.innerText = rate.toFixed(2); 
     } else {
         resultElem.innerText = "-";
     }
 }
 
-// ■■■ 3. ROAS / ROI 計算 ■■■
+function calcExamCpm() {
+    const cost = parseFloat(document.getElementById('exam_cpm_cost').value) || 0;
+    const imp = parseFloat(document.getElementById('exam_cpm_imp').value) || 0;
+    const resultElem = document.getElementById('exam_cpm_result');
+
+    if(cost > 0 && imp > 0) {
+        const cpm = Math.round((cost / imp) * 1000);
+        resultElem.innerText = cpm.toLocaleString();
+    } else {
+        resultElem.innerText = "-";
+    }
+}
+
+// ■■■ 3. ROAS / ROI / 限界CPA 計算 ■■■
 function calcRoas() {
     const cost = parseFloat(document.getElementById('roas_cost').value) || 0;
     const sales = parseFloat(document.getElementById('roas_sales').value) || 0;
@@ -474,6 +524,22 @@ function calcRoas() {
     } else {
         document.getElementById('roiFormula').innerText = "";
         document.getElementById('roiResult').innerText = "- %";
+    }
+}
+
+function calcBreakEven() {
+    const price = parseFloat(document.getElementById('be_price').value) || 0;
+    const cost = parseFloat(document.getElementById('be_cost').value) || 0;
+    const resultElem = document.getElementById('beResult');
+    
+    if(price > 0) {
+        const beCpa = price - cost;
+        document.getElementById('beFormula').innerText = `${price.toLocaleString()} - ${cost.toLocaleString()}`;
+        resultElem.innerText = beCpa.toLocaleString() + " 円";
+        resultElem.style.color = beCpa > 0 ? "var(--primary)" : "var(--danger)";
+    } else {
+        document.getElementById('beFormula').innerText = "単価 - 原価 = 限界利益";
+        resultElem.innerText = "- 円";
     }
 }
 
